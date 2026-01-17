@@ -1,0 +1,279 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
+// Mock Data
+const products = [
+    {
+        id: 1,
+        name: "Premium Face Roller",
+        price: 150000,
+        category: "Alat Kecantikan",
+    },
+    {
+        id: 2,
+        name: "Facial Cleanser Brush",
+        price: 250000,
+        category: "Alat Kecantikan",
+    },
+    { id: 3, name: "Organic Green Tea", price: 45000, category: "Minuman" },
+    { id: 4, name: "Aloe Vera Gel", price: 85000, category: "Alat Kecantikan" },
+    { id: 5, name: "Vitamin C Serum", price: 120000, category: "Obat-Obatan" },
+    {
+        id: 6,
+        name: "Hair Dryer Pro",
+        price: 450000,
+        category: "Alat Kecantikan",
+    },
+    { id: 7, name: "Keripik Tempe", price: 15000, category: "Makanan" },
+    { id: 8, name: "Yoga Mat", price: 180000, category: "Lainnya" },
+];
+
+const categories = [
+    "All",
+    "Alat Kecantikan",
+    "Minuman",
+    "Makanan",
+    "Obat-Obatan",
+];
+---
+
+<Layout title="Produk - Skinfinity">
+    <Navbar activePath="/products" />
+
+    <main class="container page-content">
+        <header class="page-header anime-title">
+            <h1 class="text-gradient">Koleksi Produk</h1>
+        </header>
+
+        <div class="products-layout">
+            <!-- Sidebar Filter -->
+            <aside class="filters glass-panel">
+                <h3>Filter</h3>
+                <div class="filter-group">
+                    <h4>Kategori</h4>
+                    <ul>
+                        {
+                            categories.map((cat) => (
+                                <li>
+                                    <label class="checkbox">
+                                        <input
+                                            type="checkbox"
+                                            checked={cat === "All"}
+                                        />{" "}
+                                        {cat}
+                                    </label>
+                                </li>
+                            ))
+                        }
+                    </ul>
+                </div>
+                <div class="filter-group">
+                    <h4>Harga</h4>
+                    <input
+                        type="range"
+                        class="range-slider"
+                        min="0"
+                        max="1000000"
+                    />
+                    <div class="price-range">Rp 0 - Rp 1jt</div>
+                </div>
+            </aside>
+
+            <!-- Product Grid -->
+            <div class="product-listing">
+                <div class="listing-header">
+                    <span>Menampilkan {products.length} produk</span>
+                    <select class="sort-select glass-panel">
+                        <option>Terbaru</option>
+                        <option>Harga Terendah</option>
+                        <option>Harga Tertinggi</option>
+                    </select>
+                </div>
+
+                <div class="product-grid">
+                    {
+                        products.map((product) => (
+                            <div class="product-card glass-panel">
+                                <div class="product-image-container">
+                                    <div class="img-placeholder" />
+                                    <button class="wishlist-btn">♥</button>
+                                </div>
+                                <div class="product-info">
+                                    <span class="product-cat">
+                                        {product.category}
+                                    </span>
+                                    <h3>{product.name}</h3>
+                                    <div class="product-bottom">
+                                        <span class="price">
+                                            Rp{" "}
+                                            {product.price.toLocaleString(
+                                                "id-ID",
+                                            )}
+                                        </span>
+                                        <button class="add-btn">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+
+                <div class="pagination">
+                    <button class="btn btn-outline">Previous</button>
+                    <button class="btn btn-primary">1</button>
+                    <button class="btn btn-outline">2</button>
+                    <button class="btn btn-outline">Next</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .page-content {
+        padding-top: 4rem;
+    }
+
+    .products-layout {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 2.5rem;
+        margin-top: 2rem;
+    }
+
+    /* Filters Sidebar */
+    .filters {
+        padding: 1.5rem;
+        height: fit-content;
+        position: sticky;
+        top: 6rem;
+    }
+
+    .filters h3 {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-group {
+        margin-bottom: 2rem;
+    }
+    .filter-group h4 {
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+    }
+
+    .filter-group ul li {
+        margin-bottom: 0.75rem;
+    }
+
+    .checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    .range-slider {
+        width: 100%;
+        accent-color: var(--color-primary);
+    }
+
+    /* Product Grid */
+    .listing-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .sort-select {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--color-border);
+        background: transparent;
+        color: var(--color-text-main);
+        border-radius: 8px;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .product-image-container {
+        position: relative;
+        aspect-ratio: 1;
+        background: #2a3441;
+    }
+
+    .wishlist-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .product-info {
+        padding: 1rem;
+    }
+
+    .product-cat {
+        font-size: 0.7rem;
+        color: var(--color-accent);
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .product-info h3 {
+        margin: 0.5rem 0;
+        font-size: 1rem;
+    }
+
+    .product-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .add-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--color-primary);
+        color: white;
+        border: none;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 4rem;
+    }
+
+    @media (max-width: 768px) {
+        .products-layout {
+            grid-template-columns: 1fr;
+        }
+        .filters {
+            display: none; /* Hide filters on mobile for now or make collapsible */
+        }
+    }
+</style>

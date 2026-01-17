@@ -1,0 +1,223 @@
+---
+import { Image } from "astro:assets";
+import logoImage from "../assets/Logo.png";
+---
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <!-- About SKINFINITY -->
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <Image src={logoImage} alt="Skinfinity Logo" height={35} />
+                </div>
+                <h4>About SKINFINITY</h4>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur. Lorem quis congue
+                    tincidunt ligula ullamcorper amet. Lorem ac diam quis non
+                    pellentesque scelerisque.
+                </p>
+            </div>
+
+            <!-- Help -->
+            <div class="footer-links">
+                <h4>Help</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Shipping</a></li>
+                    <li><a href="#">Returns Refunds</a></li>
+                    <li><a href="#">Payment Options</a></li>
+                </ul>
+            </div>
+
+            <!-- Quick Link -->
+            <div class="footer-links">
+                <h4>Quick Link</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/products">Skincare</a></li>
+                    <li><a href="/products">Makeup</a></li>
+                    <li><a href="/products">Personal Care</a></li>
+                </ul>
+            </div>
+
+            <!-- Follow Us -->
+            <div class="footer-social">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                        >
+                            <path
+                                d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                            ></path>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="Instagram">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <rect
+                                x="2"
+                                y="2"
+                                width="20"
+                                height="20"
+                                rx="5"
+                                ry="5"></rect>
+                            <path
+                                d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+                            ></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="Twitter">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                        >
+                            <path
+                                d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                            ></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 SKINFINITY. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .footer {
+        background: #1f2937;
+        padding: 4rem 0 2rem;
+        margin-top: 0;
+        color: white;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .footer-logo {
+        margin-bottom: 1rem;
+    }
+
+    .footer-logo img {
+        height: 35px;
+        width: auto;
+    }
+
+    .footer-brand h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: white;
+    }
+
+    .footer-brand p {
+        color: #9ca3af;
+        line-height: 1.7;
+        font-size: 0.9rem;
+    }
+
+    .footer-links h4,
+    .footer-social h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 1.25rem;
+    }
+
+    .footer-links ul li {
+        margin-bottom: 0.75rem;
+    }
+
+    .footer-links a {
+        color: #9ca3af;
+        font-size: 0.9rem;
+        transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+        color: var(--color-primary);
+    }
+
+    .social-icons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .social-icons a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .social-icons a:hover {
+        background: var(--color-primary);
+        transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+        text-align: center;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-bottom p {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+
+    @media (max-width: 992px) {
+        .footer-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .footer-grid {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+
+        .social-icons {
+            justify-content: center;
+        }
+
+        .footer-logo {
+            display: flex;
+            justify-content: center;
+        }
+    }
+</style>

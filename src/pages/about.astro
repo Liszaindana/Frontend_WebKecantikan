@@ -1,0 +1,153 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
+const team = [
+    {
+        name: "Nama Mahasiswa 1",
+        role: "UI/UX Designer",
+        nim: "12345678",
+        photo: "",
+    },
+    {
+        name: "Nama Mahasiswa 2",
+        role: "Frontend Developer",
+        nim: "87654321",
+        photo: "",
+    },
+    {
+        name: "Nama Mahasiswa 3",
+        role: "Backend Developer",
+        nim: "11223344",
+        photo: "",
+    },
+];
+---
+
+<Layout title="Tentang Kami - Skinfinity">
+    <Navbar activePath="/about" />
+
+    <main class="container page-content">
+        <section class="about-hero animate-fade-in">
+            <h1 class="text-gradient">Tentang Skinfinity</h1>
+            <p>
+                Kami berdedikasi untuk menyediakan produk kesehatan dan
+                kecantikan terbaik untuk Anda.
+            </p>
+        </section>
+
+        <section class="team-section">
+            <h2>Tim Kami</h2>
+            <div class="team-grid">
+                {
+                    team.map((member) => (
+                        <div class="member-card glass-panel">
+                            <div class="member-photo">
+                                {member.photo ? (
+                                    <img src={member.photo} alt={member.name} />
+                                ) : (
+                                    <div class="photo-placeholder">
+                                        {member.name[0]}
+                                    </div>
+                                )}
+                            </div>
+                            <h3>{member.name}</h3>
+                            <p class="role">{member.role}</p>
+                            <p class="nim">{member.nim}</p>
+                        </div>
+                    ))
+                }
+            </div>
+        </section>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .page-content {
+        padding-top: 4rem;
+        min-height: 80vh;
+    }
+
+    .about-hero {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 6rem;
+    }
+
+    .about-hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+    }
+    .about-hero p {
+        font-size: 1.25rem;
+        color: var(--color-text-muted);
+    }
+
+    .team-section {
+        margin-bottom: 4rem;
+    }
+
+    .team-section h2 {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 2rem;
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        justify-content: center;
+    }
+
+    .member-card {
+        padding: 3rem 2rem;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: transform 0.3s ease;
+    }
+
+    .member-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .member-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .photo-placeholder {
+        font-size: 3rem;
+        color: white;
+        font-weight: bold;
+    }
+
+    .member-card h3 {
+        margin: 0.5rem 0;
+        color: var(--color-text-main);
+    }
+
+    .role {
+        color: var(--color-primary);
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+    }
+
+    .nim {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+    }
+</style>

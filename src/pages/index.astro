@@ -1,0 +1,760 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
+// Mock Data for Products
+const newArrivals = [
+	{
+		id: 1,
+		name: "Handbody Vaseline 250ml",
+		price: 45000,
+		image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=300&h=300&fit=crop",
+		category: "Skincare",
+	},
+	{
+		id: 2,
+		name: "Scarlet Brightening Facial Wash 100ml",
+		price: 89000,
+		image: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=300&h=300&fit=crop",
+		category: "Skincare",
+	},
+	{
+		id: 3,
+		name: "Lip Balm Nivea 4gr",
+		price: 25000,
+		image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=300&h=300&fit=crop",
+		category: "Lip Care",
+	},
+];
+
+const bestSellers = [
+	{
+		id: 4,
+		name: "Makaria Hair Energy",
+		price: 35000,
+		image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=300&fit=crop",
+		category: "Hair Care",
+	},
+	{
+		id: 5,
+		name: "Maybelline Pomade Pencil Brown 0.15gr",
+		price: 120000,
+		image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=300&h=300&fit=crop",
+		category: "Makeup",
+	},
+	{
+		id: 6,
+		name: "Facelogy Triple Care Mask",
+		price: 65000,
+		image: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=300&h=300&fit=crop",
+		category: "Skincare",
+	},
+];
+---
+
+<Layout title="Skinfinity - Home">
+	<Navbar activePath="/" />
+
+	<main>
+		<!-- Hero Section -->
+		<section class="hero">
+			<div class="hero-bg-collage">
+				<!-- Background images representing beauty products collage -->
+				<div class="collage-item item-1"></div>
+				<div class="collage-item item-2"></div>
+				<div class="collage-item item-3"></div>
+				<div class="collage-item item-4"></div>
+				<div class="collage-item item-5"></div>
+			</div>
+			<div class="hero-overlay"></div>
+			<div class="container hero-content">
+				<div class="hero-logo-container animate-fade-in">
+					<div class="hero-logo-box">
+						<span class="logo-text">SKINFINITY</span>
+					</div>
+				</div>
+				<a href="/contact" class="talk-btn animate-fade-in">
+					<span>Talk to Me</span>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="16"
+						height="16"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<line x1="5" y1="12" x2="19" y2="12"></line>
+						<polyline points="12 5 19 12 12 19"></polyline>
+					</svg>
+				</a>
+			</div>
+		</section>
+
+		<!-- New Arrival & Best Seller Section -->
+		<section class="products-section">
+			<div class="container">
+				<!-- Section Tabs -->
+				<div class="section-tabs">
+					<button class="tab-btn active" data-tab="new-arrival"
+						>NEW ARRIVAL</button
+					>
+					<span class="tab-divider">/</span>
+					<button class="tab-btn" data-tab="best-seller"
+						>BEST SELLER</button
+					>
+				</div>
+
+				<!-- New Arrival Products -->
+				<div class="products-grid" id="new-arrival">
+					{
+						newArrivals.map((product) => (
+							<a
+								href={`/products/${product.id}`}
+								class="product-card"
+							>
+								<div class="product-image">
+									<img
+										src={product.image}
+										alt={product.name}
+										loading="lazy"
+									/>
+								</div>
+								<div class="product-info">
+									<h3 class="product-name">{product.name}</h3>
+									<span class="product-category">
+										{product.category}
+									</span>
+								</div>
+							</a>
+						))
+					}
+				</div>
+
+				<!-- Best Seller Products (Hidden by default) -->
+				<div class="products-grid hidden" id="best-seller">
+					{
+						bestSellers.map((product) => (
+							<a
+								href={`/products/${product.id}`}
+								class="product-card"
+							>
+								<div class="product-image">
+									<img
+										src={product.image}
+										alt={product.name}
+										loading="lazy"
+									/>
+								</div>
+								<div class="product-info">
+									<h3 class="product-name">{product.name}</h3>
+									<span class="product-category">
+										{product.category}
+									</span>
+								</div>
+							</a>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- Sale Banner Section -->
+		<section class="sale-banner">
+			<div class="container">
+				<div class="banner-content">
+					<div class="banner-text">
+						<p class="banner-subtitle">DISKON SPESIAL</p>
+						<h2 class="banner-title">HINGGA 70% !</h2>
+						<div class="sale-badge">
+							<span>SALE</span>
+						</div>
+						<p class="banner-info">AKHIR TAHUN</p>
+					</div>
+					<div class="banner-image">
+						<div class="banner-model"></div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Brand Showcase Section -->
+		<section class="brand-showcase">
+			<div class="showcase-bg">
+				<div class="showcase-text-repeat">
+					<span>SKINFINITY</span>
+					<span>SKINFINITY</span>
+					<span>SKINFINITY</span>
+					<span>SKINFINITY</span>
+				</div>
+			</div>
+			<div class="container">
+				<div class="showcase-grid">
+					<div class="showcase-item item-left">
+						<img
+							src="https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=400&h=500&fit=crop"
+							alt="Model 1"
+							loading="lazy"
+						/>
+						<div class="showcase-label">
+							<span>LOVE</span>
+							<span>YOUR</span>
+						</div>
+					</div>
+					<div class="showcase-item item-center">
+						<img
+							src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=600&fit=crop"
+							alt="Model 2"
+							loading="lazy"
+						/>
+						<div class="showcase-label center">
+							<span>BE</span>
+							<span>BRAVE</span>
+						</div>
+					</div>
+					<div class="showcase-item item-right">
+						<img
+							src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=500&fit=crop"
+							alt="Model 3"
+							loading="lazy"
+						/>
+						<div class="showcase-label">
+							<span>GLOW</span>
+							<span>LIKE</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<Footer />
+</Layout>
+
+<style>
+	/* Hero Section */
+	.hero {
+		position: relative;
+		min-height: 70vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		background: linear-gradient(135deg, #fce7f3 0%, #fff 50%, #fdf4f8 100%);
+	}
+
+	.hero-bg-collage {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1;
+	}
+
+	.collage-item {
+		position: absolute;
+		background-size: cover;
+		background-position: center;
+		border-radius: 8px;
+	}
+
+	.item-1 {
+		top: 5%;
+		left: 5%;
+		width: 200px;
+		height: 250px;
+		background-image: url("https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&h=400&fit=crop");
+		transform: rotate(-5deg);
+	}
+
+	.item-2 {
+		top: 10%;
+		right: 10%;
+		width: 180px;
+		height: 220px;
+		background-image: url("https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=300&h=400&fit=crop");
+		transform: rotate(8deg);
+	}
+
+	.item-3 {
+		bottom: 10%;
+		left: 15%;
+		width: 160px;
+		height: 200px;
+		background-image: url("https://images.unsplash.com/photo-1571875257727-256c39da42af?w=300&h=400&fit=crop");
+		transform: rotate(3deg);
+	}
+
+	.item-4 {
+		bottom: 15%;
+		right: 5%;
+		width: 220px;
+		height: 280px;
+		background-image: url("https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=300&h=400&fit=crop");
+		transform: rotate(-8deg);
+	}
+
+	.item-5 {
+		top: 40%;
+		left: 50%;
+		transform: translateX(-50%) rotate(5deg);
+		width: 150px;
+		height: 180px;
+		background-image: url("https://images.unsplash.com/photo-1526045478516-99145907023c?w=300&h=400&fit=crop");
+	}
+
+	.hero-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(255, 255, 255, 0.3);
+		z-index: 2;
+	}
+
+	.hero-content {
+		position: relative;
+		z-index: 10;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		padding: 4rem 0;
+	}
+
+	.hero-logo-container {
+		margin-bottom: 2rem;
+	}
+
+	.hero-logo-box {
+		background: rgba(0, 0, 0, 0.85);
+		padding: 1.5rem 3rem;
+		border-radius: 8px;
+		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+	}
+
+	.logo-text {
+		font-size: 2.5rem;
+		font-weight: 700;
+		color: white;
+		letter-spacing: 0.15em;
+	}
+
+	.talk-btn {
+		position: absolute;
+		top: 2rem;
+		right: 2rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		background: rgba(255, 255, 255, 0.9);
+		padding: 0.75rem 1.25rem;
+		border-radius: 50px;
+		color: #1f2937;
+		font-weight: 500;
+		font-size: 0.9rem;
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+		transition: all 0.3s ease;
+		text-decoration: none;
+	}
+
+	.talk-btn:hover {
+		background: white;
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+	}
+
+	/* Products Section */
+	.products-section {
+		padding: 4rem 0;
+		background: #fce7f3;
+	}
+
+	.section-tabs {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		margin-bottom: 3rem;
+	}
+
+	.tab-btn {
+		font-size: 1rem;
+		font-weight: 600;
+		color: #9ca3af;
+		background: none;
+		border: none;
+		cursor: pointer;
+		letter-spacing: 0.05em;
+		transition: color 0.3s ease;
+		padding: 0.5rem 1rem;
+	}
+
+	.tab-btn.active {
+		color: #1f2937;
+		position: relative;
+	}
+
+	.tab-btn.active::after {
+		content: "";
+		position: absolute;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 40px;
+		height: 3px;
+		background: var(--color-primary);
+		border-radius: 2px;
+	}
+
+	.tab-btn:hover {
+		color: #1f2937;
+	}
+
+	.tab-divider {
+		color: #9ca3af;
+		font-weight: 300;
+	}
+
+	.products-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 2rem;
+	}
+
+	.products-grid.hidden {
+		display: none;
+	}
+
+	.product-card {
+		background: white;
+		border-radius: 16px;
+		overflow: hidden;
+		transition: all 0.3s ease;
+		text-decoration: none;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+	}
+
+	.product-card:hover {
+		transform: translateY(-8px);
+		box-shadow: 0 12px 40px rgba(232, 121, 249, 0.15);
+	}
+
+	.product-image {
+		width: 100%;
+		aspect-ratio: 1/1;
+		overflow: hidden;
+		background: #f9fafb;
+	}
+
+	.product-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.4s ease;
+	}
+
+	.product-card:hover .product-image img {
+		transform: scale(1.08);
+	}
+
+	.product-info {
+		padding: 1.5rem;
+		text-align: center;
+	}
+
+	.product-name {
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: #1f2937;
+		margin: 0 0 0.5rem;
+		line-height: 1.4;
+	}
+
+	.product-category {
+		font-size: 0.8rem;
+		color: #9ca3af;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	/* Sale Banner Section */
+	.sale-banner {
+		padding: 4rem 0;
+		background: linear-gradient(
+			135deg,
+			#a855f7 0%,
+			#c084fc 50%,
+			#e879f9 100%
+		);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.banner-content {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 4rem;
+		position: relative;
+		z-index: 2;
+	}
+
+	.banner-text {
+		flex: 1;
+		color: white;
+	}
+
+	.banner-subtitle {
+		font-size: 1.25rem;
+		font-weight: 500;
+		margin: 0 0 0.5rem;
+		letter-spacing: 0.1em;
+	}
+
+	.banner-title {
+		font-size: 4rem;
+		font-weight: 800;
+		margin: 0 0 1rem;
+		line-height: 1;
+	}
+
+	.sale-badge {
+		display: inline-block;
+		background: #fbbf24;
+		color: #1f2937;
+		padding: 0.5rem 2rem;
+		font-size: 2rem;
+		font-weight: 800;
+		border-radius: 4px;
+		transform: rotate(-3deg);
+		margin-bottom: 1rem;
+	}
+
+	.banner-info {
+		font-size: 1.5rem;
+		font-weight: 600;
+		margin: 0;
+		letter-spacing: 0.15em;
+	}
+
+	.banner-image {
+		flex: 1;
+		display: flex;
+		justify-content: center;
+	}
+
+	.banner-model {
+		width: 300px;
+		height: 400px;
+		background: url("https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=500&fit=crop")
+			center/cover;
+		border-radius: 16px;
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+	}
+
+	/* Brand Showcase Section */
+	.brand-showcase {
+		padding: 4rem 0;
+		background: #1f2937;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.showcase-bg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 1;
+		opacity: 0.1;
+	}
+
+	.showcase-text-repeat {
+		display: flex;
+		gap: 4rem;
+		font-size: 8rem;
+		font-weight: 900;
+		color: white;
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		white-space: nowrap;
+	}
+
+	.showcase-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 2rem;
+		position: relative;
+		z-index: 2;
+	}
+
+	.showcase-item {
+		position: relative;
+		border-radius: 16px;
+		overflow: hidden;
+		aspect-ratio: 3/4;
+	}
+
+	.showcase-item img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.5s ease;
+	}
+
+	.showcase-item:hover img {
+		transform: scale(1.05);
+	}
+
+	.showcase-label {
+		position: absolute;
+		bottom: 2rem;
+		left: 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.showcase-label span {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: white;
+		text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+		letter-spacing: 0.1em;
+	}
+
+	.showcase-label.center {
+		left: 50%;
+		transform: translateX(-50%);
+		text-align: center;
+		align-items: center;
+	}
+
+	.item-center {
+		transform: translateY(-1rem);
+	}
+
+	/* Responsive Design */
+	@media (max-width: 992px) {
+		.products-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.showcase-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.showcase-item:last-child {
+			display: none;
+		}
+
+		.banner-title {
+			font-size: 3rem;
+		}
+
+		.banner-model {
+			width: 250px;
+			height: 330px;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.hero {
+			min-height: 50vh;
+		}
+
+		.logo-text {
+			font-size: 1.75rem;
+		}
+
+		.hero-logo-box {
+			padding: 1rem 2rem;
+		}
+
+		.talk-btn {
+			top: 1rem;
+			right: 1rem;
+			padding: 0.5rem 1rem;
+			font-size: 0.8rem;
+		}
+
+		.collage-item {
+			width: 100px !important;
+			height: 120px !important;
+		}
+
+		.products-grid {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
+
+		.section-tabs {
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+
+		.tab-divider {
+			display: none;
+		}
+
+		.banner-content {
+			flex-direction: column;
+			text-align: center;
+		}
+
+		.banner-title {
+			font-size: 2.5rem;
+		}
+
+		.showcase-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.showcase-item:nth-child(2),
+		.showcase-item:last-child {
+			display: none;
+		}
+
+		.item-center {
+			transform: none;
+		}
+	}
+</style>
+
+<script>
+	// Tab switching functionality
+	document.addEventListener("DOMContentLoaded", () => {
+		const tabBtns = document.querySelectorAll(".tab-btn");
+		const productGrids = document.querySelectorAll(".products-grid");
+
+		tabBtns.forEach((btn) => {
+			btn.addEventListener("click", () => {
+				const targetTab = btn.getAttribute("data-tab");
+
+				// Update active tab button
+				tabBtns.forEach((b) => b.classList.remove("active"));
+				btn.classList.add("active");
+
+				// Show/hide product grids
+				productGrids.forEach((grid) => {
+					if (grid.id === targetTab) {
+						grid.classList.remove("hidden");
+					} else {
+						grid.classList.add("hidden");
+					}
+				});
+			});
+		});
+	});
+</script>

@@ -1,0 +1,169 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Login - Skinfinity">
+    <div class="login-container">
+        <div class="glass-panel login-box animate-fade-in">
+            <div class="login-header">
+                <h1 class="text-gradient">Welcome Back</h1>
+                <p>Masuk untuk mengelola akun Anda</p>
+            </div>
+
+            <form class="login-form" action="/admin/dashboard">
+                <!-- Direct to admin for demo -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="nama@email.com"
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="••••••••"
+                        required
+                    />
+                </div>
+
+                <div class="form-actions">
+                    <label class="checkbox">
+                        <input type="checkbox" /> Ingat saya
+                    </label>
+                    <a href="#" class="forgot-pass">Lupa password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width"
+                    >Masuk</button
+                >
+            </form>
+
+            <div class="login-footer">
+                <p>Belum punya akun? <a href="/register">Daftar sekarang</a></p>
+            </div>
+        </div>
+
+        <div class="glow-bg"></div>
+    </div>
+</Layout>
+
+<style>
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-box {
+        width: 100%;
+        max-width: 400px;
+        padding: 2.5rem;
+        position: relative;
+        z-index: 10;
+        background: rgba(15, 23, 42, 0.6); /* Darker for better contrast */
+    }
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .login-header h1 {
+        margin-bottom: 0.5rem;
+        font-size: 2rem;
+    }
+
+    .login-header p {
+        color: var(--color-text-muted);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--color-text-main);
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .form-group input:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        font-size: 0.875rem;
+    }
+
+    .checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    .forgot-pass {
+        color: var(--color-primary);
+    }
+
+    .full-width {
+        width: 100%;
+    }
+
+    .login-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+    }
+
+    .login-footer a {
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+
+    .glow-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        max-width: 600px;
+        max-height: 600px;
+        background: radial-gradient(
+            circle,
+            rgba(99, 102, 241, 0.2) 0%,
+            rgba(0, 0, 0, 0) 70%
+        );
+        z-index: 1;
+        pointer-events: none;
+    }
+</style>

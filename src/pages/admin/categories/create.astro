@@ -1,0 +1,57 @@
+---
+import AdminLayout from "../../../layouts/adminLayout.astro";
+---
+
+<AdminLayout title="Tambah Kategori">
+    <div class="glass-panel section">
+        <h2>Tambah Kategori Baru</h2>
+
+        <form class="form-layout">
+            <div class="form-group">
+                <label for="name">Nama Kategori</label>
+                <input
+                    type="text"
+                    id="name"
+                    class="form-control"
+                    placeholder="Contoh: Alat Kecantikan"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="slug">Slug (URL)</label>
+                <input
+                    type="text"
+                    id="slug"
+                    class="form-control"
+                    placeholder="contoh: alat-kecantikan"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Deskripsi</label>
+                <textarea
+                    id="description"
+                    class="form-control"
+                    placeholder="Deskripsi singkat kategori..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <a href="/admin/categories" class="btn btn-outline">Batal</a>
+                <button type="submit" class="btn btn-primary"
+                    >Simpan Kategori</button
+                >
+            </div>
+        </form>
+    </div>
+</AdminLayout>
+
+<style>
+    .section {
+        padding: 2rem;
+    }
+    h2 {
+        margin-top: 0;
+        margin-bottom: 2rem;
+    }
+</style>

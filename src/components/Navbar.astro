@@ -1,0 +1,235 @@
+---
+import { Image } from "astro:assets";
+import logoImage from "../assets/Logo.png";
+
+const { activePath = "/" } = Astro.props;
+---
+
+<header class="site-header">
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <span class="top-link">HOME</span>
+
+            <div class="top-icons">
+                <a href="#" class="icon-link" aria-label="Wishlist">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                        ></path></svg
+                    >
+                </a>
+                <a href="/cart" class="icon-link" aria-label="Cart">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><path
+                            d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"
+                        ></path><line x1="3" y1="6" x2="21" y2="6"></line><path
+                            d="M16 10a4 4 0 0 1-8 0"></path></svg
+                    >
+                </a>
+                <a href="/login" class="icon-link" aria-label="Account">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+                        ></path><circle cx="12" cy="7" r="4"></circle></svg
+                    >
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navbar -->
+    <nav class="main-navbar">
+        <div class="container main-nav-content">
+            <a href="/" class="brand-logo">
+                <Image src={logoImage} alt="Skinfinity Logo" height={40} />
+            </a>
+
+            <div class="nav-links">
+                <a href="/" class={activePath === "/" ? "active" : ""}>HOME</a>
+                <a
+                    href="/products"
+                    class={activePath === "/products" ||
+                    activePath === "/categories"
+                        ? "active"
+                        : ""}>PAGES</a
+                >
+                <a
+                    href="/contact"
+                    class={activePath === "/contact" ? "active" : ""}>CONTACT</a
+                >
+                <a href="/about" class={activePath === "/about" ? "active" : ""}
+                    >ABOUT</a
+                >
+                <a href="/cart" class={activePath === "/cart" ? "active" : ""}
+                    >CHART</a
+                >
+            </div>
+
+            <div class="nav-search">
+                <button class="search-btn" aria-label="Search">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><circle cx="11" cy="11" r="8"></circle><line
+                            x1="21"
+                            y1="21"
+                            x2="16.65"
+                            y2="16.65"></line></svg
+                    >
+                </button>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<style>
+    /* Top Bar */
+    .top-bar {
+        background-color: #000000;
+        color: #ffffff;
+        padding: 0.5rem 0;
+        font-size: 0.875rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .top-bar-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .top-link {
+        letter-spacing: 0.05em;
+        font-weight: 500;
+    }
+
+    .top-icons {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .icon-link {
+        color: #ffffff;
+        transition: color 0.2s;
+        display: flex;
+        align-items: center;
+    }
+
+    .icon-link:hover {
+        color: var(--color-primary);
+    }
+
+    /* Main Navbar */
+    .main-navbar {
+        background-color: #1e1e1e;
+        padding: 1rem 0;
+        width: 100%;
+        z-index: 100;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .main-nav-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+    }
+
+    .brand-logo img {
+        height: 40px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 2.5rem;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .nav-links a {
+        color: #a0a0a0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: color 0.2s;
+        position: relative;
+    }
+
+    .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--color-primary);
+        transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+        width: 100%;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+        color: #e879f9;
+    }
+
+    .search-btn {
+        color: #ffffff;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        transition: color 0.2s;
+    }
+
+    .search-btn:hover {
+        color: var(--color-primary);
+    }
+
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+    }
+</style>

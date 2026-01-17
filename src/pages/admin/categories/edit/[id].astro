@@ -1,0 +1,64 @@
+---
+import AdminLayout from "../../../../layouts/adminLayout.astro";
+
+const { id } = Astro.params;
+// Mock fetch data based on ID
+const category = {
+    name: "Alat Kecantikan",
+    slug: "alat-kecantikan",
+    description: "Berbagai alat kecantikan premium for your skincare routine.",
+};
+---
+
+<AdminLayout title="Edit Kategori">
+    <div class="glass-panel section">
+        <h2>Edit Kategori: {category.name}</h2>
+
+        <form class="form-layout">
+            <div class="form-group">
+                <label for="name">Nama Kategori</label>
+                <input
+                    type="text"
+                    id="name"
+                    class="form-control"
+                    value={category.name}
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="slug">Slug (URL)</label>
+                <input
+                    type="text"
+                    id="slug"
+                    class="form-control"
+                    value={category.slug}
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Deskripsi</label>
+                <textarea id="description" class="form-control"
+                    >{category.description}</textarea
+                >
+            </div>
+
+            <div class="form-actions">
+                <a href="/admin/categories" class="btn btn-outline">Batal</a>
+                <button type="submit" class="btn btn-primary"
+                    >Update Kategori</button
+                >
+            </div>
+        </form>
+    </div>
+</AdminLayout>
+
+<style>
+    .section {
+        padding: 2rem;
+    }
+    h2 {
+        margin-top: 0;
+        margin-bottom: 2rem;
+    }
+</style>

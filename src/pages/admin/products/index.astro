@@ -1,0 +1,97 @@
+---
+import AdminLayout from "../../../layouts/adminLayout.astro";
+
+const products = [
+    {
+        id: 1,
+        name: "Premium Face Roller",
+        category: "Alat Kecantikan",
+        price: 150000,
+        stock: 50,
+    },
+    {
+        id: 2,
+        name: "Facial Cleanser Brush",
+        category: "Alat Kecantikan",
+        price: 250000,
+        stock: 25,
+    },
+    {
+        id: 3,
+        name: "Organic Green Tea",
+        category: "Minuman",
+        price: 45000,
+        stock: 100,
+    },
+];
+---
+
+<AdminLayout title="Kelola Produk">
+    <div class="glass-panel section">
+        <div class="header-actions">
+            <a href="/admin/products/create" class="btn btn-primary"
+                >+ Tambah Produk</a
+            >
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nama Produk</th>
+                        <th>Kategori</th>
+                        <th>Harga</th>
+                        <th>Stok</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        products.map((product) => (
+                            <tr>
+                                <td>#{product.id}</td>
+                                <td>
+                                    <div style="display: flex; flex-direction: column;">
+                                        <span style="font-weight: 500;">
+                                            {product.name}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span
+                                        class="status-badge"
+                                        style="background: rgba(255,255,255,0.1); color: white;"
+                                    >
+                                        {product.category}
+                                    </span>
+                                </td>
+                                <td>
+                                    Rp {product.price.toLocaleString("id-ID")}
+                                </td>
+                                <td>{product.stock}</td>
+                                <td>
+                                    <a
+                                        href={`/admin/products/edit/${product.id}`}
+                                        class="action-btn btn-edit"
+                                    >
+                                        Edit
+                                    </a>
+                                    <button class="action-btn btn-delete">
+                                        Hapus
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</AdminLayout>
+
+<style>
+    .section {
+        padding: 1.5rem;
+    }
+</style>

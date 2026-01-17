@@ -1,0 +1,85 @@
+---
+import AdminLayout from "../../../layouts/adminLayout.astro";
+
+const sales = [
+    {
+        id: "#ORD-001",
+        date: "2024-01-12",
+        customer: "Budi Santoso",
+        total: 450000,
+        status: "Selesai",
+    },
+    {
+        id: "#ORD-002",
+        date: "2024-01-11",
+        customer: "Siti Aminah",
+        total: 120000,
+        status: "Proses",
+    },
+    {
+        id: "#ORD-003",
+        date: "2024-01-11",
+        customer: "Andi Saputra",
+        total: 1200000,
+        status: "Pending",
+    },
+];
+---
+
+<AdminLayout title="Data Penjualan">
+    <div class="glass-panel section">
+        <div class="header-actions">
+            <!-- No create button for sales usually, transactions happen from frontend -->
+            <button class="btn btn-primary">Export Data</button>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Tanggal</th>
+                        <th>Pelanggan</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        sales.map((sale) => (
+                            <tr>
+                                <td class="primary-text">{sale.id}</td>
+                                <td>{sale.date}</td>
+                                <td>{sale.customer}</td>
+                                <td>Rp {sale.total.toLocaleString("id-ID")}</td>
+                                <td>
+                                    <span
+                                        class={`status-badge ${sale.status.toLowerCase()}`}
+                                    >
+                                        {sale.status}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="action-btn btn-edit">
+                                        Detail
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</AdminLayout>
+
+<style>
+    .section {
+        padding: 1.5rem;
+    }
+    .primary-text {
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+</style>
