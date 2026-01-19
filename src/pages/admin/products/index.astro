@@ -4,94 +4,98 @@ import AdminLayout from "../../../layouts/adminLayout.astro";
 const products = [
     {
         id: 1,
-        name: "Premium Face Roller",
-        category: "Alat Kecantikan",
+        name: "Premium Glow Serum",
+        category_slug: "skincare",
         price: 150000,
-        stock: 50,
+        stock: 45,
+        image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=200",
     },
     {
         id: 2,
-        name: "Facial Cleanser Brush",
-        category: "Alat Kecantikan",
-        price: 250000,
-        stock: 25,
+        name: "Hydrating Face Mist",
+        category_slug: "skincare",
+        price: 85000,
+        stock: 8,
+        image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&q=80&w=200",
     },
     {
         id: 3,
-        name: "Organic Green Tea",
-        category: "Minuman",
-        price: 45000,
-        stock: 100,
+        name: "Matte Liquid Lipstick",
+        category_slug: "makeup",
+        price: 120000,
+        stock: 25,
+        image: "https://images.unsplash.com/photo-1586776977607-310e9c725c37?auto=format&fit=crop&q=80&w=200",
     },
 ];
 ---
 
 <AdminLayout title="Kelola Produk">
-    <div class="glass-panel section">
-        <div class="header-actions">
-            <a href="/admin/products/create" class="btn btn-primary"
-                >+ Tambah Produk</a
-            >
-        </div>
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-2xl font-bold text-slate-900">Kelola Produk</h1>
+        <button
+            class="bg-pink-600 text-white px-6 py-3 rounded-full font-bold text-sm uppercase tracking-wider hover:bg-pink-700 transition-colors shadow-lg shadow-pink-600/20"
+        >
+            + Tambah Produk
+        </button>
+    </div>
 
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nama Produk</th>
-                        <th>Kategori</th>
-                        <th>Harga</th>
-                        <th>Stok</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        products.map((product) => (
-                            <tr>
-                                <td>#{product.id}</td>
-                                <td>
-                                    <div style="display: flex; flex-direction: column;">
-                                        <span style="font-weight: 500;">
-                                            {product.name}
-                                        </span>
+    <div
+        class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+    >
+        <table class="w-full text-left text-sm text-slate-600">
+            <thead
+                class="bg-slate-50 text-slate-900 font-bold uppercase tracking-wider text-xs border-b border-gray-100"
+            >
+                <tr>
+                    <th class="px-6 py-4">Produk</th>
+                    <th class="px-6 py-4">Kategori</th>
+                    <th class="px-6 py-4">Harga</th>
+                    <th class="px-6 py-4">Stok</th>
+                    <th class="px-6 py-4 text-center">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                {
+                    products.map((p) => (
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded bg-gray-100 flex-shrink-0 overflow-hidden">
+                                        <img
+                                            src={p.image}
+                                            class="w-full h-full object-cover"
+                                        />
                                     </div>
-                                </td>
-                                <td>
-                                    <span
-                                        class="status-badge"
-                                        style="background: rgba(255,255,255,0.1); color: white;"
-                                    >
-                                        {product.category}
+                                    <span class="font-bold text-slate-900">
+                                        {p.name}
                                     </span>
-                                </td>
-                                <td>
-                                    Rp {product.price.toLocaleString("id-ID")}
-                                </td>
-                                <td>{product.stock}</td>
-                                <td>
-                                    <a
-                                        href={`/admin/products/edit/${product.id}`}
-                                        class="action-btn btn-edit"
-                                    >
-                                        Edit
-                                    </a>
-                                    <button class="action-btn btn-delete">
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
-        </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 capitalize">
+                                {p.category_slug}
+                            </td>
+                            <td class="px-6 py-4">
+                                Rp {p.price.toLocaleString("id-ID")}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class={`px-2 py-1 rounded-full text-xs font-bold ${p.stock > 10 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                                >
+                                    {p.stock} pcs
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <button class="text-slate-400 hover:text-blue-600 mx-2">
+                                    Edit
+                                </button>
+                                <button class="text-slate-400 hover:text-red-600 mx-2">
+                                    Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
     </div>
 </AdminLayout>
-
-<style>
-    .section {
-        padding: 1.5rem;
-    }
-</style>

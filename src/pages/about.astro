@@ -1,7 +1,5 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Navbar from "../components/Navbar.astro";
-import Footer from "../components/Footer.astro";
+import MainLayout from "../layouts/MainLayout.astro";
 
 const team = [
     {
@@ -25,9 +23,7 @@ const team = [
 ];
 ---
 
-<Layout title="Tentang Kami - Skinfinity">
-    <Navbar activePath="/about" />
-
+<MainLayout title="Tentang Kami - Skinfinity" activePath="/about">
     <main class="container page-content">
         <section class="about-hero animate-fade-in">
             <h1 class="text-gradient">Tentang Skinfinity</h1>
@@ -61,9 +57,7 @@ const team = [
             </div>
         </section>
     </main>
-
-    <Footer />
-</Layout>
+</MainLayout>
 
 <style>
     .page-content {

@@ -1,57 +1,78 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import "../styles/global.css";
 ---
 
-<Layout title="Login - Skinfinity">
-    <div class="login-container">
-        <div class="glass-panel login-box animate-fade-in">
-            <div class="login-header">
-                <h1 class="text-gradient">Welcome Back</h1>
-                <p>Masuk untuk mengelola akun Anda</p>
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login - Skinfinity</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body class="bg-black text-white antialiased">
+        <div class="login-container">
+            <div class="glass-panel login-box animate-fade-in">
+                <div class="login-header">
+                    <h1 class="text-gradient">Welcome Back</h1>
+                    <p>Masuk untuk mengelola akun Anda</p>
+                </div>
+
+                <form class="login-form" action="/admin/dashboard">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="nama@email.com"
+                            required
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="••••••••"
+                            required
+                        />
+                    </div>
+
+                    <div class="form-actions">
+                        <label class="checkbox">
+                            <input type="checkbox" /> Ingat saya
+                        </label>
+                        <a href="#" class="forgot-pass">Lupa password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary full-width"
+                        >Masuk</button
+                    >
+                </form>
+
+                <div class="login-footer">
+                    <p>
+                        Belum punya akun? <a href="/register"
+                            >Daftar sekarang</a>
+                    </p>
+                    <div style="margin-top: 20px;">
+                        <a href="/" style="color: #94a3b8; font-size: 0.8rem;"
+                            >← Kembali ke Beranda</a
+                        >
+                    </div>
+                </div>
             </div>
 
-            <form class="login-form" action="/admin/dashboard">
-                <!-- Direct to admin for demo -->
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        placeholder="nama@email.com"
-                        required
-                    />
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        placeholder="••••••••"
-                        required
-                    />
-                </div>
-
-                <div class="form-actions">
-                    <label class="checkbox">
-                        <input type="checkbox" /> Ingat saya
-                    </label>
-                    <a href="#" class="forgot-pass">Lupa password?</a>
-                </div>
-
-                <button type="submit" class="btn btn-primary full-width"
-                    >Masuk</button
-                >
-            </form>
-
-            <div class="login-footer">
-                <p>Belum punya akun? <a href="/register">Daftar sekarang</a></p>
-            </div>
+            <div class="glow-bg"></div>
         </div>
-
-        <div class="glow-bg"></div>
-    </div>
-</Layout>
+    </body>
+</html>
 
 <style>
     .login-container {
@@ -62,6 +83,7 @@ import Layout from "../layouts/Layout.astro";
         padding: 1rem;
         position: relative;
         overflow: hidden;
+        background-color: #000;
     }
 
     .login-box {
@@ -70,7 +92,9 @@ import Layout from "../layouts/Layout.astro";
         padding: 2.5rem;
         position: relative;
         z-index: 10;
-        background: rgba(15, 23, 42, 0.6); /* Darker for better contrast */
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
     }
 
     .login-header {
@@ -81,10 +105,12 @@ import Layout from "../layouts/Layout.astro";
     .login-header h1 {
         margin-bottom: 0.5rem;
         font-size: 2rem;
+        font-weight: 700;
     }
 
     .login-header p {
-        color: var(--color-text-muted);
+        color: #94a3b8;
+        font-size: 0.9rem;
     }
 
     .form-group {
@@ -95,14 +121,15 @@ import Layout from "../layouts/Layout.astro";
         display: block;
         margin-bottom: 0.5rem;
         font-weight: 500;
-        color: var(--color-text-main);
+        color: #f1f5f9;
+        font-size: 0.9rem;
     }
 
     .form-group input {
         width: 100%;
         padding: 0.75rem 1rem;
         border-radius: 8px;
-        border: 1px solid var(--color-border);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         background: rgba(255, 255, 255, 0.05);
         color: white;
         outline: none;
@@ -110,8 +137,8 @@ import Layout from "../layouts/Layout.astro";
     }
 
     .form-group input:focus {
-        border-color: var(--color-primary);
-        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        border-color: #f472b6;
+        box-shadow: 0 0 0 2px rgba(244, 114, 182, 0.2);
     }
 
     .form-actions {
@@ -127,10 +154,11 @@ import Layout from "../layouts/Layout.astro";
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
+        color: #94a3b8;
     }
 
     .forgot-pass {
-        color: var(--color-primary);
+        color: #f472b6;
     }
 
     .full-width {
@@ -141,12 +169,13 @@ import Layout from "../layouts/Layout.astro";
         text-align: center;
         margin-top: 1.5rem;
         font-size: 0.875rem;
-        color: var(--color-text-muted);
+        color: #94a3b8;
     }
 
     .login-footer a {
-        color: var(--color-primary);
+        color: #f472b6;
         font-weight: 600;
+        text-decoration: none;
     }
 
     .glow-bg {
@@ -160,7 +189,7 @@ import Layout from "../layouts/Layout.astro";
         max-height: 600px;
         background: radial-gradient(
             circle,
-            rgba(99, 102, 241, 0.2) 0%,
+            rgba(244, 114, 182, 0.15) 0%,
             rgba(0, 0, 0, 0) 70%
         );
         z-index: 1;

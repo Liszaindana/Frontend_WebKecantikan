@@ -1,169 +1,151 @@
 ---
 import "../styles/global.css";
 
-interface Props {
-    title: string;
-}
-
 const { title } = Astro.props;
+const currentPath = Astro.url.pathname;
+const menuItems = [
+    {
+        label: "Dashboard",
+        href: "/admin/dashboard",
+        icon: "M4 6h16M4 12h16M4 18h7",
+    },
+    {
+        label: "Produk",
+        href: "/admin/products",
+        icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4",
+    },
+    { label: "Kategori", href: "/admin/categories", icon: "M7 7h10v10H7z" },
+    {
+        label: "Pelanggan",
+        href: "/admin/customers",
+        icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
+    },
+    {
+        label: "Transaksi",
+        href: "/admin/sales",
+        icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+    },
+];
 ---
 
 <!doctype html>
 <html lang="id">
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+            {title ? `${title} | Skintify Admin` : "Admin Dashboard | Skintify"}
+        </title>
+        <!-- Google Fonts -->
         <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap"
             rel="stylesheet"
         />
-        <title>Admin - {title}</title>
+        <style>
+            body {
+                font-family: "Outfit", sans-serif;
+            }
+        </style>
     </head>
-    <body class="admin-body">
-        <div class="admin-layout">
-            <aside class="sidebar glass-panel">
-                <div class="logo-area">
-                    <h2 class="text-gradient">Kasir Admin</h2>
+    <body class="bg-slate-50 text-slate-800">
+        <div class="flex h-screen overflow-hidden">
+            <!-- Sidebar -->
+            <aside
+                class="w-64 bg-slate-900 text-white flex flex-col shadow-2xl z-20"
+            >
+                <div
+                    class="h-20 flex items-center px-8 border-b border-slate-800"
+                >
+                    <span
+                        class="text-2xl font-serif font-bold italic tracking-tighter"
+                        >Skintify<span class="text-pink-500">.</span> Admin</span
+                    >
                 </div>
-                <nav>
-                    <ul>
-                        <li>
-                            <a href="/admin/dashboard" class="nav-link"
-                                >Dashboard</a>
-                        </li>
-                        <li>
-                            <a href="/admin/categories" class="nav-link"
-                                >Kategori</a>
-                        </li>
-                        <li>
-                            <a href="/admin/products" class="nav-link"
-                                >Produk</a>
-                        </li>
-                        <li>
-                            <a href="/admin/customers" class="nav-link"
-                                >Pelanggan</a>
-                        </li>
-                        <li>
-                            <a href="/admin/sales" class="nav-link"
-                                >Penjualan</a>
-                        </li>
-                    </ul>
+
+                <nav class="flex-1 px-4 py-8 space-y-2 overflow-y-auto">
+                    <p
+                        class="px-4 text-xs font-bold text-slate-500 uppercase tracking-widest mb-4"
+                    >
+                        Menu Utama
+                    </p>
+                    {
+                        menuItems.map((item) => (
+                            <a
+                                href={item.href}
+                                class={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 group ${currentPath.startsWith(item.href) ? "bg-pink-600 text-white shadow-lg shadow-pink-900/20" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="h-5 w-5 mr-3 group-hover:scale-110 transition-transform"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d={item.icon}
+                                    />
+                                </svg>
+                                <span class="font-medium text-sm">
+                                    {item.label}
+                                </span>
+                            </a>
+                        ))
+                    }
                 </nav>
-                <div class="user-area">
-                    <a href="/" class="nav-link logout">Logout</a>
+
+                <div class="p-4 border-t border-slate-800">
+                    <a
+                        href="/"
+                        class="flex items-center px-4 py-3 text-slate-400 hover:text-white transition-colors"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 mr-3"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                            ></path>
+                        </svg>
+                        <span class="text-sm font-medium">Logout</span>
+                    </a>
                 </div>
             </aside>
-            <main class="main-content">
-                <header class="topbar glass-panel">
-                    <h1>{title}</h1>
-                    <div class="admin-profile">
-                        <span>Admin User</span>
-                        <div class="avatar">A</div>
+
+            <!-- Main Content -->
+            <div class="flex-1 flex flex-col overflow-hidden">
+                <!-- Header -->
+                <header
+                    class="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-8 z-10 sticky top-0"
+                >
+                    <div class="flex items-center text-slate-500">
+                        <span class="mr-2">Admin</span> / <span
+                            class="ml-2 font-bold text-slate-900 capitalize"
+                            >{currentPath.split("/")[2] || "Dashboard"}</span
+                        >
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold"
+                        >
+                            A
+                        </div>
                     </div>
                 </header>
-                <div class="content-area">
+
+                <!-- Scrollable Content -->
+                <main class="flex-1 overflow-x-hidden overflow-y-auto p-8">
                     <slot />
-                </div>
-            </main>
+                </main>
+            </div>
         </div>
     </body>
 </html>
-
-<style>
-    .admin-body {
-        background: var(--color-bg-secondary);
-        min-height: 100vh;
-    }
-
-    .admin-layout {
-        display: grid;
-        grid-template-columns: 260px 1fr;
-        min-height: 100vh;
-    }
-
-    .sidebar {
-        margin: 1rem;
-        padding: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        border-radius: 16px;
-    }
-
-    .logo-area {
-        margin-bottom: 2rem;
-        text-align: center;
-    }
-
-    .logo-area h2 {
-        margin: 0;
-        font-size: 1.5rem;
-    }
-
-    .nav-link {
-        display: block;
-        padding: 0.75rem 1rem;
-        margin-bottom: 0.5rem;
-        border-radius: 8px;
-        color: var(--color-text-muted);
-        transition: all 0.2s;
-    }
-
-    .nav-link:hover,
-    .nav-link.active {
-        background: rgba(99, 102, 241, 0.1);
-        color: var(--color-primary);
-    }
-
-    .logout {
-        margin-top: auto;
-        color: var(--color-danger);
-    }
-
-    .logout:hover {
-        background: rgba(239, 68, 68, 0.1);
-        color: var(--color-danger);
-    }
-
-    .main-content {
-        padding: 1rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .topbar {
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .topbar h1 {
-        margin: 0;
-        font-size: 1.25rem;
-    }
-
-    .admin-profile {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: var(--gradient-primary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-    }
-
-    .content-area {
-        flex: 1;
-    }
-</style>

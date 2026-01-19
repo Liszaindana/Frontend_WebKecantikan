@@ -1,25 +1,9 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Navbar from "../components/Navbar.astro";
-import Footer from "../components/Footer.astro";
-
-const categories = [
-    { name: "Alat Kecantikan", count: 120, icon: "✨" },
-    { name: "Minuman", count: 85, icon: "🥤" },
-    { name: "Makanan", count: 200, icon: "🍔" },
-    { name: "Obat-Obatan", count: 50, icon: "💊" },
-    { name: "Mainan", count: 90, icon: "🧸" },
-    { name: "Bumbu Masak", count: 60, icon: "🧂" },
-    { name: "Alat Tulis", count: 40, icon: "✏️" },
-    { name: "Sabun Cuci", count: 30, icon: "🧼" },
-    { name: "Alat Mandi", count: 45, icon: "🚿" },
-    { name: "Alat Kebersihan", count: 35, icon: "🧹" },
-];
+import MainLayout from "../layouts/MainLayout.astro";
+import { categories } from "../data/categories";
 ---
 
-<Layout title="Kategori - Skinfinity">
-    <Navbar activePath="/categories" />
-
+<MainLayout title="Kategori - Skinfinity">
     <main class="container page-content">
         <header class="page-header">
             <h1 class="text-gradient">Jelajahi Kategori</h1>
@@ -41,9 +25,7 @@ const categories = [
             }
         </div>
     </main>
-
-    <Footer />
-</Layout>
+</MainLayout>
 
 <style>
     .page-content {

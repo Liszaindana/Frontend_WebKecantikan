@@ -1,88 +1,91 @@
 ---
+// src/pages/admin/customers/index.astro
 import AdminLayout from "../../../layouts/adminLayout.astro";
 
+// Data simulasi sesuai tabel 'customer' di database
 const customers = [
     {
         id: 1,
         name: "Budi Santoso",
-        email: "budi@example.com",
         phone: "08123456789",
-        status: "Active",
+        email: "budi@example.com",
+        totalOrders: 5,
     },
     {
         id: 2,
         name: "Siti Aminah",
+        phone: "08765432100",
         email: "siti@example.com",
-        phone: "08987654321",
-        status: "Active",
-    },
-    {
-        id: 3,
-        name: "Andi Saputra",
-        email: "andi@example.com",
-        phone: "08567891234",
-        status: "Inactive",
+        totalOrders: 3,
     },
 ];
 ---
 
 <AdminLayout title="Kelola Pelanggan">
-    <div class="glass-panel section">
-        <div class="header-actions">
-            <a href="/admin/customers/create" class="btn btn-primary"
-                >+ Tambah Pelanggan</a
-            >
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800">Data Pelanggan</h1>
+            <p class="text-sm text-slate-500">
+                Manajemen database customer toko lu bro.
+            </p>
         </div>
+        <a
+            href="/admin/customers/create"
+            class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition"
+        >
+            + Customer Baru
+        </a>
+    </div>
 
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nama Lengkap</th>
-                        <th>Email</th>
-                        <th>No. Telepon</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        customers.map((cust) => (
-                            <tr>
-                                <td>#{cust.id}</td>
-                                <td>{cust.name}</td>
-                                <td>{cust.email}</td>
-                                <td>{cust.phone}</td>
-                                <td>
-                                    <span
-                                        class={`status-badge ${cust.status.toLowerCase()}`}
-                                    >
-                                        {cust.status}
-                                    </span>
-                                </td>
-                                <td>
+    <div
+        class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+    >
+        <table class="w-full text-left">
+            <thead
+                class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-widest"
+            >
+                <tr>
+                    <th class="px-6 py-4">Nama & Kontak</th>
+                    <th class="px-6 py-4">Email</th>
+                    <th class="px-6 py-4">Total Belanja</th>
+                    <th class="px-6 py-4 text-right">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {
+                    customers.map((c) => (
+                        <tr class="hover:bg-slate-50/50 transition">
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-slate-800">
+                                    {c.name}
+                                </div>
+                                <div class="text-xs text-slate-400 font-mono">
+                                    {c.phone}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-slate-600 font-medium">
+                                {c.email}
+                            </td>
+                            <td class="px-6 py-4 font-bold text-indigo-600">
+                                {c.totalOrders} Kali
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-end gap-3 font-bold text-sm">
                                     <a
-                                        href={`/admin/customers/edit/${cust.id}`}
-                                        class="action-btn btn-edit"
+                                        href={`/admin/customers/edit/${c.id}`}
+                                        class="text-indigo-600 hover:underline"
                                     >
                                         Edit
                                     </a>
-                                    <button class="action-btn btn-delete">
+                                    <button class="text-red-500 hover:underline">
                                         Hapus
                                     </button>
-                                </td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
-        </div>
+                                </div>
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
     </div>
 </AdminLayout>
-
-<style>
-    .section {
-        padding: 1.5rem;
-    }
-</style>

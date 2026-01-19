@@ -2,63 +2,40 @@
 import AdminLayout from "../../../../layouts/adminLayout.astro";
 
 const { id } = Astro.params;
-// Mock fetch data based on ID
+
+// Mock data based on ID
 const category = {
-    name: "Alat Kecantikan",
-    slug: "alat-kecantikan",
-    description: "Berbagai alat kecantikan premium for your skincare routine.",
+    id: id,
+    name: id === "1" ? "Skincare" : "Makeup",
+    slug: id === "1" ? "skincare" : "makeup",
 };
+
+if (Astro.request.method === "POST") {
+    // In a real app, we would process the data here.
+    // For UI focus, we just redirect back.
+    return Astro.redirect("/admin/categories");
+}
 ---
 
 <AdminLayout title="Edit Kategori">
-    <div class="glass-panel section">
-        <h2>Edit Kategori: {category.name}</h2>
-
-        <form class="form-layout">
-            <div class="form-group">
-                <label for="name">Nama Kategori</label>
-                <input
-                    type="text"
-                    id="name"
-                    class="form-control"
-                    value={category.name}
-                    required
-                />
-            </div>
-
-            <div class="form-group">
-                <label for="slug">Slug (URL)</label>
-                <input
-                    type="text"
-                    id="slug"
-                    class="form-control"
-                    value={category.slug}
-                />
-            </div>
-
-            <div class="form-group">
-                <label for="description">Deskripsi</label>
-                <textarea id="description" class="form-control"
-                    >{category.description}</textarea
-                >
-            </div>
-
-            <div class="form-actions">
-                <a href="/admin/categories" class="btn btn-outline">Batal</a>
-                <button type="submit" class="btn btn-primary"
-                    >Update Kategori</button
-                >
-            </div>
-        </form>
+    <div class="flex justify-between items-center">
+        <h2>Edit Kategori</h2>
+        <a href="/admin/categories">Batal</a>
     </div>
-</AdminLayout>
 
-<style>
-    .section {
-        padding: 2rem;
-    }
-    h2 {
-        margin-top: 0;
-        margin-bottom: 2rem;
-    }
-</style>
+    <form method="POST" id="form">
+        <div>
+            <label for="">Name</label>
+            <input
+                type="text"
+                name="name"
+                value={category.name}
+                placeholder="Name"
+            />
+        </div>
+
+        <div>
+            <button type="submit">Simpan</button>
+        </div>
+    </form>
+</AdminLayout>

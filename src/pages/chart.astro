@@ -1,0 +1,345 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import { products } from "../data/products";
+
+// Select two items for the shopping bag demo
+const cartItems = [
+    { ...products[0], quantity: 1 },
+    { ...products[4], quantity: 1 },
+];
+
+// Calculation is simple since it's just a demo
+const subtotalPrice = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0,
+);
+---
+
+<MainLayout title="Shopping Bag" activePath="/chart">
+    <div class="chart-page">
+        <div class="container chart-container">
+            <!-- Left Side: Shopping Bag -->
+            <div class="shopping-bag-section">
+                <h1 class="page-title">SHOPPING BAG</h1>
+
+                <div class="cart-items-list">
+                    {
+                        cartItems.map((item) => (
+                            <div class="cart-item">
+                                <div class="item-image">
+                                    <div class="image-placeholder" />
+                                </div>
+                                <div class="item-details">
+                                    <div class="name-price-row">
+                                        <h3 class="item-name">
+                                            Nama Produk
+                                            <span class="dots">..........</span>
+                                        </h3>
+                                        <span class="item-price">
+                                            harga produck
+                                        </span>
+                                    </div>
+                                    <p class="item-qty">
+                                        Qty <strong>{item.quantity}</strong>
+                                    </p>
+                                    <div class="item-actions">
+                                        <button class="action-link">
+                                            ADD TO WHISLIST
+                                        </button>
+                                        <button class="action-link remove">
+                                            REMOVE
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+            </div>
+
+            <!-- Right Side: Order Summary -->
+            <div class="order-summary-section">
+                <h2 class="summary-title">ORDER SUMMARY</h2>
+
+                <div class="promo-box">
+                    <input type="text" placeholder="ENTER PROMO CODE" />
+                </div>
+
+                <div class="summary-totals">
+                    <div class="total-row">
+                        <span>SUBTOTAL</span>
+                        <strong>Total</strong>
+                    </div>
+                </div>
+
+                <button class="checkout-btn">PROCEED TO CHECKOUT</button>
+
+                <div class="payment-icons">
+                    <!-- Simple Payment SVG Placeholders -->
+                    <svg
+                        width="30"
+                        height="20"
+                        viewBox="0 0 30 20"
+                        class="payment-svg"
+                        ><rect
+                            width="30"
+                            height="20"
+                            rx="3"
+                            fill="none"
+                            stroke="white"
+                            stroke-opacity="0.5"></rect></svg
+                    >
+                    <svg
+                        width="30"
+                        height="20"
+                        viewBox="0 0 30 20"
+                        class="payment-svg"
+                        ><rect
+                            width="30"
+                            height="20"
+                            rx="3"
+                            fill="none"
+                            stroke="white"
+                            stroke-opacity="0.5"></rect></svg
+                    >
+                    <svg
+                        width="30"
+                        height="20"
+                        viewBox="0 0 30 20"
+                        class="payment-svg"
+                        ><rect
+                            width="30"
+                            height="20"
+                            rx="3"
+                            fill="none"
+                            stroke="white"
+                            stroke-opacity="0.5"></rect></svg
+                    >
+                    <svg
+                        width="30"
+                        height="20"
+                        viewBox="0 0 30 20"
+                        class="payment-svg"
+                        ><rect
+                            width="30"
+                            height="20"
+                            rx="3"
+                            fill="none"
+                            stroke="white"
+                            stroke-opacity="0.5"></rect></svg
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    .chart-page {
+        background-color: #ff99ff; /* Vibrant pink from Frame 5 */
+        min-height: 80vh;
+        padding: 2rem 0; /* Reduced top padding */
+    }
+
+    .chart-container {
+        display: flex;
+        gap: 5rem;
+        max-width: 1150px; /* Wider than before, but still structured */
+        margin: 0 auto;
+    }
+
+    .shopping-bag-section {
+        flex: 1.6;
+    }
+
+    .order-summary-section {
+        flex: 1;
+    }
+
+    .page-title {
+        font-family: "Playfair Display", serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 3rem;
+        color: #1a1a1a;
+        letter-spacing: 0.1em;
+    }
+
+    .summary-title {
+        font-family: "Playfair Display", serif;
+        font-size: 2.2rem;
+        font-weight: 400; /* Lighter weight as in frame for summary title */
+        margin-bottom: 2.5rem;
+        color: #1a1a1a;
+        letter-spacing: 0.05em;
+        margin-top: 0;
+    }
+
+    .cart-items-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .cart-item {
+        display: flex;
+        gap: 2.5rem;
+        padding-bottom: 2rem;
+        border-bottom: 1.5px solid rgba(0, 0, 0, 0.15);
+    }
+
+    .item-image {
+        width: 160px;
+        height: 160px;
+        flex-shrink: 0;
+    }
+
+    .image-placeholder {
+        width: 100%;
+        height: 100%;
+        background-color: #d1d5db;
+        border-radius: 60px 0 60px 0; /* Stylized rounded corners as in frame */
+    }
+
+    .item-details {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .name-price-row {
+        display: flex;
+        justify-content: flex-start; /* Moved to the left */
+        align-items: baseline;
+        margin-bottom: 0.8rem;
+    }
+
+    .item-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        flex: 0 1 auto; /* Don't fill all available space */
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .dots {
+        font-weight: 300;
+        letter-spacing: 3px;
+        color: rgba(0, 0, 0, 0.2);
+        margin-left: 10px;
+    }
+
+    .item-price {
+        font-size: 1.3rem;
+        font-weight: 900;
+        color: #1a1a1a;
+        margin-left: 1rem;
+    }
+
+    .item-qty {
+        font-size: 1rem;
+        margin-bottom: 1.8rem;
+        color: #1a1a1a;
+    }
+
+    .item-actions {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .action-link {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        text-decoration: underline;
+        border: none;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
+        text-transform: uppercase;
+    }
+
+    .action-link.remove {
+        color: #6b7280;
+    }
+
+    .promo-box {
+        margin-bottom: 2rem;
+    }
+
+    .promo-box input {
+        width: 100%;
+        padding: 1.4rem;
+        border: 1.5px solid #1a1a1a;
+        background: transparent;
+        font-family: inherit;
+        font-weight: 700;
+        text-align: center;
+        outline: none;
+        font-size: 1rem;
+        letter-spacing: 0.05em;
+    }
+
+    .summary-totals {
+        border-bottom: 2.5px solid #1a1a1a;
+        margin-bottom: 2rem;
+        padding-bottom: 1.2rem;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .total-row strong {
+        font-weight: 900;
+        font-size: 1.25rem;
+    }
+
+    .checkout-btn {
+        width: 100%;
+        background-color: #000;
+        color: #fff;
+        padding: 1.4rem;
+        font-weight: 900;
+        font-size: 1rem;
+        letter-spacing: 0.15em;
+        cursor: pointer;
+        transition: transform 0.2s;
+        margin-bottom: 2rem;
+        border: none;
+    }
+
+    .checkout-btn:hover {
+        background-color: #1a1a1a;
+        transform: scale(1.02);
+    }
+
+    .payment-icons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .payment-svg {
+        opacity: 0.6;
+    }
+
+    @media (max-width: 992px) {
+        .chart-container {
+            flex-direction: column;
+            gap: 4rem;
+        }
+        .chart-page {
+            padding: 3rem 1.5rem;
+        }
+    }
+</style>
