@@ -1,29 +1,8 @@
 ---
 import AdminLayout from "../../../layouts/adminLayout.astro";
 
-const sales = [
-    {
-        id: "#ORD-001",
-        date: "2024-01-12",
-        customer: "Budi Santoso",
-        total: 450000,
-        status: "Selesai",
-    },
-    {
-        id: "#ORD-002",
-        date: "2024-01-11",
-        customer: "Siti Aminah",
-        total: 120000,
-        status: "Proses",
-    },
-    {
-        id: "#ORD-003",
-        date: "2024-01-11",
-        customer: "Andi Saputra",
-        total: 1200000,
-        status: "Pending",
-    },
-];
+const resp = await fetch("http://localhost:3000/orders");
+const sales = await resp.json();
 ---
 
 <AdminLayout title="Data Penjualan">
@@ -39,9 +18,8 @@ const sales = [
                     <tr>
                         <th>Order ID</th>
                         <th>Tanggal</th>
-                        <th>Pelanggan</th>
+                        <th>Pelanggan ID</th>
                         <th>Total</th>
-                        <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -49,21 +27,24 @@ const sales = [
                     {
                         sales.map((sale) => (
                             <tr>
-                                <td class="primary-text">{sale.id}</td>
-                                <td>{sale.date}</td>
-                                <td>{sale.customer}</td>
-                                <td>Rp {sale.total.toLocaleString("id-ID")}</td>
+                                <td class="primary-text">{sale.ORDER_ID}</td>
                                 <td>
-                                    <span
-                                        class={`status-badge ${sale.status.toLowerCase()}`}
-                                    >
-                                        {sale.status}
-                                    </span>
+                                    {new Date(
+                                        sale.ORDER_DATE,
+                                    ).toLocaleDateString("id-ID")}
+                                </td>
+                                <td>{sale.CUST_ID || "Guest"}</td>
+                                <td>
+                                    Rp {sale.TOTAL?.toLocaleString("id-ID")}
                                 </td>
                                 <td>
-                                    <button class="action-btn btn-edit">
+                                    <a
+                                        href={`/admin/penjualan/${sale.ORDER_ID}`}
+                                        class="action-btn btn-edit"
+                                        style="text-decoration: none;"
+                                    >
                                         Detail
-                                    </button>
+                                    </a>
                                 </td>
                             </tr>
                         ))

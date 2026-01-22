@@ -1,18 +1,5 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import { products } from "../data/products";
-
-// Select two items for the shopping bag demo
-const cartItems = [
-    { ...products[0], quantity: 1 },
-    { ...products[4], quantity: 1 },
-];
-
-// Calculation is simple since it's just a demo
-const subtotalPrice = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0,
-);
 ---
 
 <MainLayout title="Shopping Bag" activePath="/chart">
@@ -22,38 +9,63 @@ const subtotalPrice = cartItems.reduce(
             <div class="shopping-bag-section">
                 <h1 class="page-title">SHOPPING BAG</h1>
 
-                <div class="cart-items-list">
-                    {
-                        cartItems.map((item) => (
-                            <div class="cart-item">
-                                <div class="item-image">
-                                    <div class="image-placeholder" />
-                                </div>
-                                <div class="item-details">
-                                    <div class="name-price-row">
-                                        <h3 class="item-name">
-                                            Nama Produk
-                                            <span class="dots">..........</span>
-                                        </h3>
-                                        <span class="item-price">
-                                            harga produck
-                                        </span>
-                                    </div>
-                                    <p class="item-qty">
-                                        Qty <strong>{item.quantity}</strong>
-                                    </p>
-                                    <div class="item-actions">
-                                        <button class="action-link">
-                                            ADD TO WHISLIST
-                                        </button>
-                                        <button class="action-link remove">
-                                            REMOVE
-                                        </button>
-                                    </div>
+                <div id="cartItemsList" class="cart-items-list">
+                    <!-- Static demo items like original design -->
+                    <div class="cart-item">
+                        <div class="item-image-wrapper">
+                            <div class="item-image">
+                                <div class="image-placeholder">
+                                    <span class="img-text">Nama Produk</span>
                                 </div>
                             </div>
-                        ))
-                    }
+                        </div>
+                        <div class="item-details">
+                            <div class="name-price-row">
+                                <h3 class="item-name">Nama Produk</h3>
+                                <span class="item-price">harga produck</span>
+                            </div>
+                            <p class="item-qty">Qty <strong>1</strong></p>
+                            <div class="item-actions">
+                                <button class="action-link"
+                                    >ADD TO WHISLIST</button
+                                >
+                                <button class="action-link remove"
+                                    >REMOVE</button
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cart-item">
+                        <div class="item-image-wrapper">
+                            <div class="item-image">
+                                <div class="image-placeholder">
+                                    <span class="img-text">Nama Produk</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item-details">
+                            <div class="name-price-row">
+                                <h3 class="item-name">Nama Produk</h3>
+                                <span class="item-price">harga produck</span>
+                            </div>
+                            <p class="item-qty">Qty <strong>1</strong></p>
+                            <div class="item-actions">
+                                <button class="action-link"
+                                    >ADD TO WHISLIST</button
+                                >
+                                <button class="action-link remove"
+                                    >REMOVE</button
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="empty-cart" id="emptyCart" style="display: none;">
+                    <p>Keranjang belanja Anda kosong.</p>
+                    <a href="/categories" class="shop-now-btn"
+                        >BELANJA SEKARANG</a
+                    >
                 </div>
             </div>
 
@@ -68,11 +80,13 @@ const subtotalPrice = cartItems.reduce(
                 <div class="summary-totals">
                     <div class="total-row">
                         <span>SUBTOTAL</span>
-                        <strong>Total</strong>
+                        <strong id="subtotalPrice">Rp 0</strong>
                     </div>
                 </div>
 
-                <button class="checkout-btn">PROCEED TO CHECKOUT</button>
+                <button id="checkoutBtn" class="checkout-btn"
+                    >PROCEED TO CHECKOUT</button
+                >
 
                 <div class="payment-icons">
                     <!-- Simple Payment SVG Placeholders -->
@@ -134,11 +148,118 @@ const subtotalPrice = cartItems.reduce(
     </div>
 </MainLayout>
 
-<style>
+<script>
+    function renderCart() {
+        const cartItemsList = document.getElementById("cartItemsList");
+        const emptyCart = document.getElementById("emptyCart");
+        const subtotalPriceEl = document.getElementById("subtotalPrice");
+
+        // Get cart from localStorage
+        const cart = JSON.parse(
+            localStorage.getItem("skinfinity_cart") || "[]",
+        );
+
+        if (cart.length === 0) {
+            if (emptyCart) emptyCart.style.display = "block";
+            if (cartItemsList) cartItemsList.style.display = "none";
+            if (subtotalPriceEl) subtotalPriceEl.textContent = "Rp 0";
+            return;
+        }
+
+        // Show cart items, hide empty message
+        if (emptyCart) emptyCart.style.display = "none";
+        if (cartItemsList) cartItemsList.style.display = "flex";
+
+        // Calculate subtotal
+        let subtotal = 0;
+
+        // Build cart HTML
+        let cartHTML = "";
+        cart.forEach((item: any, index: number) => {
+            subtotal += item.price * item.quantity;
+            cartHTML += `
+                <div class="cart-item" data-index="${index}">
+                    <div class="item-image-wrapper">
+                        <div class="item-image">
+                            <div class="image-placeholder">
+                                <span class="img-text">${item.name}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-details">
+                        <div class="name-price-row">
+                            <h3 class="item-name">
+                                ${item.name}
+                            </h3>
+                            <span class="item-price">
+                                Rp ${item.price.toLocaleString("id-ID")}
+                            </span>
+                        </div>
+                        <p class="item-qty">
+                            Qty <strong>${item.quantity}</strong>
+                        </p>
+                        <div class="item-actions">
+                            <button class="action-link">
+                                ADD TO WHISLIST
+                            </button>
+                            <button class="action-link remove remove-item" data-index="${index}">
+                                REMOVE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        if (cartItemsList) {
+            cartItemsList.innerHTML = cartHTML;
+        }
+
+        // Update subtotal
+        if (subtotalPriceEl) {
+            subtotalPriceEl.textContent = `Rp ${subtotal.toLocaleString("id-ID")}`;
+        }
+
+        // Add event listeners to remove buttons
+        document.querySelectorAll(".remove-item").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const target = e.target as HTMLElement;
+                const index = parseInt(target.dataset.index || "0");
+                removeFromCart(index);
+            });
+        });
+    }
+
+    function removeFromCart(index: number) {
+        let cart = JSON.parse(localStorage.getItem("skinfinity_cart") || "[]");
+        cart.splice(index, 1);
+        localStorage.setItem("skinfinity_cart", JSON.stringify(cart));
+        renderCart();
+    }
+
+    // Initialize cart on page load
+    document.addEventListener("DOMContentLoaded", renderCart);
+
+    // Checkout button
+    document.getElementById("checkoutBtn")?.addEventListener("click", () => {
+        const cart = JSON.parse(
+            localStorage.getItem("skinfinity_cart") || "[]",
+        );
+        if (cart.length === 0) {
+            alert("Keranjang belanja Anda kosong!");
+            return;
+        }
+        alert("Terima kasih! Pesanan Anda sedang diproses.");
+        localStorage.removeItem("skinfinity_cart");
+        renderCart();
+    });
+</script>
+
+<style is:global>
     .chart-page {
-        background-color: #ff99ff; /* Vibrant pink from Frame 5 */
+        background-color: #fce7f3; /* Matching light pink from product pages */
         min-height: 80vh;
-        padding: 2rem 0; /* Reduced top padding */
+        padding: 2rem 0;
     }
 
     .chart-container {
@@ -181,24 +302,74 @@ const subtotalPrice = cartItems.reduce(
         gap: 2rem;
     }
 
+    .empty-cart {
+        text-align: center;
+        padding: 3rem;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+    }
+
+    .empty-cart p {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+        color: #1a1a1a;
+    }
+
+    .shop-now-btn {
+        display: inline-block;
+        background: #1a1a1a;
+        color: white;
+        padding: 1rem 2rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.2s;
+    }
+
+    .shop-now-btn:hover {
+        transform: scale(1.05);
+    }
+
     .cart-item {
         display: flex;
         gap: 2.5rem;
         padding-bottom: 2rem;
         border-bottom: 1.5px solid rgba(0, 0, 0, 0.15);
+        align-items: center;
+    }
+
+    .item-image-wrapper {
+        width: 140px;
+        height: 140px;
+        flex-shrink: 0;
     }
 
     .item-image {
-        width: 160px;
-        height: 160px;
-        flex-shrink: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        border-radius: 20% 80% 20% 80% / 20% 50% 50% 80%;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
     }
 
     .image-placeholder {
         width: 100%;
         height: 100%;
-        background-color: #d1d5db;
-        border-radius: 60px 0 60px 0; /* Stylized rounded corners as in frame */
+        background: #fdf2f8;
+        border-radius: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #f472b6;
+        font-weight: 600;
+        text-align: center;
+        padding: 0.5rem;
+        overflow: hidden;
+        font-size: 0.75rem;
     }
 
     .item-details {
@@ -210,7 +381,7 @@ const subtotalPrice = cartItems.reduce(
 
     .name-price-row {
         display: flex;
-        justify-content: flex-start; /* Moved to the left */
+        justify-content: space-between;
         align-items: baseline;
         margin-bottom: 0.8rem;
     }
@@ -225,13 +396,6 @@ const subtotalPrice = cartItems.reduce(
         flex: 0 1 auto; /* Don't fill all available space */
         margin: 0;
         white-space: nowrap;
-    }
-
-    .dots {
-        font-weight: 300;
-        letter-spacing: 3px;
-        color: rgba(0, 0, 0, 0.2);
-        margin-left: 10px;
     }
 
     .item-price {

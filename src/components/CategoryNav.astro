@@ -1,0 +1,217 @@
+---
+// src/components/CategoryNav.astro
+const { activeCategory = "all" } = Astro.props;
+
+// Fetch categories from API
+let categories = [];
+try {
+    const categoriesRes = await fetch("http://localhost:3000/categories");
+    const categoriesData = await categoriesRes.json();
+    categories = categoriesData.map((c: any) => ({
+        id: c.CATEGORY_ID,
+        name: c.CATEGORY,
+        slug: c.CATEGORY_ID, // Using ID as slug or mapping it
+    }));
+} catch (e) {
+    console.error("Error fetching categories for Nav:", e);
+}
+
+// Map Names to Slugs (as per existing structure)
+const getSlug = (name: string) => {
+    const n = name.toUpperCase();
+    if (n === "ALAT KECANTIKAN") return "AC";
+    if (n === "BODY CARE") return "BC";
+    if (n === "CLEANSER") return "CL";
+    if (n === "HAIR CARE") return "HC";
+    if (n === "LIP CARE") return "LC";
+    if (n === "MAKEUP") return "MK";
+    if (n === "SKINCARE") return "SK";
+    if (n === "SUNCREEN" || n === "SUNSCREEN") return "SC";
+    if (n === "MICELLAR WATER") return "MW";
+    return null;
+};
+---
+
+<nav class="category-nav-container">
+    <div class="category-toggle-wrapper">
+        <button id="categoryToggle" class="category-toggle-btn">
+            Category
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="chevron-icon"><path d="m6 9 6 6 6-6"></path></svg
+            >
+        </button>
+    </div>
+
+    <div id="categoryMenu" class="category-menu">
+        <div class="category-list-inner">
+            <a
+                href="/categories"
+                class={`cat-btn ${activeCategory === "all" ? "active" : ""}`}
+                >ALL</a
+            >
+            {
+                categories.map((cat: any) => {
+                    const slug = getSlug(cat.name);
+                    let displayName = cat.name.toUpperCase();
+                    if (displayName === "SUNCREEN") displayName = "SUNSCREEN";
+
+                    const isActive =
+                        activeCategory === cat.name || activeCategory === slug;
+                    if (slug) {
+                        return (
+                            <a
+                                href={`/categories/${slug}/products`}
+                                class={`cat-btn ${isActive ? "active" : ""}`}
+                            >
+                                {displayName}
+                            </a>
+                        );
+                    }
+                    return (
+                        <button
+                            class={`cat-btn ${isActive ? "active" : ""}`}
+                            data-category={cat.id}
+                        >
+                            {displayName}
+                        </button>
+                    );
+                })
+            }
+        </div>
+    </div>
+</nav>
+
+<script>
+    const categoryToggle = document.getElementById("categoryToggle");
+    const categoryMenu = document.getElementById("categoryMenu");
+
+    categoryToggle?.addEventListener("click", () => {
+        categoryMenu?.classList.toggle("open");
+        categoryToggle?.classList.toggle("active");
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener("click", (event) => {
+        const isClickInside =
+            categoryToggle?.contains(event.target as Node) ||
+            categoryMenu?.contains(event.target as Node);
+        if (!isClickInside && categoryMenu?.classList.contains("open")) {
+            categoryMenu.classList.remove("open");
+            categoryToggle?.classList.remove("active");
+        }
+    });
+</script>
+
+<style>
+    .category-nav-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 0 0.5rem;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    .category-toggle-wrapper {
+        margin-bottom: 0.5rem;
+    }
+
+    .category-toggle-btn {
+        background: white;
+        padding: 0.5rem 2rem;
+        border-radius: 999px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        color: #1f2937;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .category-toggle-btn.active .chevron-icon {
+        transform: rotate(180deg);
+    }
+
+    .category-menu {
+        background: white;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        transition:
+            max-height 0.4s ease-out,
+            padding 0.3s ease;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .category-menu.open {
+        max-height: 400px;
+        padding: 1rem 0;
+    }
+
+    .category-list-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap; /* Keep wrap for mobile, but try to fit on desktop */
+        justify-content: center;
+        gap: 1.2rem;
+        padding: 0 1rem;
+    }
+
+    .cat-btn {
+        font-family: inherit;
+        font-weight: 500;
+        font-size: 0.85rem;
+        color: #4b5563;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        position: relative;
+        text-decoration: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .cat-btn:hover {
+        color: #d946ef;
+    }
+
+    .cat-btn.active {
+        color: #d946ef;
+        font-weight: 700;
+    }
+
+    .cat-btn.active::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: #d946ef;
+    }
+
+    @media (max-width: 768px) {
+        .category-list-inner {
+            gap: 1rem;
+        }
+        .category-menu.open {
+            max-height: 600px;
+        }
+    }
+</style>

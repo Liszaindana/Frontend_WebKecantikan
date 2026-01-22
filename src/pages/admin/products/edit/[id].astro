@@ -1,45 +1,64 @@
 ---
 import AdminLayout from "../../../../layouts/adminLayout.astro";
 
+export async function getStaticPaths() {
+    const resp = await fetch("http://localhost:3000/products");
+    const products = await resp.json();
+    return products.map((p: any) => ({
+        params: { id: p.PRODUCT_ID.toString() },
+    }));
+}
+
 const { id } = Astro.params;
-// Mock data
-const product = {
-    name: "Premium Face Roller",
-    category_id: "1",
-    price: 150000,
-    stock: 50,
-    description: "Roller wajah premium untuk relaksasi dan perawatan kulit.",
-};
+
+// Fetch product data
+const respProduct = await fetch(`http://localhost:3000/products/${id}`);
+const productData = await respProduct.json();
+const product = productData; // Should be the single product object
+
+// Fetch categories for dropdown
+const respCategories = await fetch("http://localhost:3000/categories");
+const categories = await respCategories.json();
 ---
 
 <AdminLayout title="Edit Produk">
     <div class="glass-panel section">
-        <h2>Edit Produk: {product.name}</h2>
+        <h2>Edit Produk: {product.PRODUCT_NAME}</h2>
 
-        <form class="form-layout">
+        <form class="form-layout" id="editProductForm">
+            <input type="hidden" name="PRODUCT_ID" value={id} />
             <div class="form-group">
                 <label for="name">Nama Produk</label>
                 <input
                     type="text"
                     id="name"
+                    name="PRODUCT_NAME"
                     class="form-control"
-                    value={product.name}
+                    value={product.PRODUCT_NAME}
                     required
                 />
             </div>
 
             <div class="form-group">
                 <label for="category">Kategori</label>
-                <select id="category" class="form-control">
-                    <option value="1" selected={product.category_id === "1"}
-                        >Alat Kecantikan</option
-                    >
-                    <option value="2" selected={product.category_id === "2"}
-                        >Minuman</option
-                    >
-                    <option value="3" selected={product.category_id === "3"}
-                        >Makanan</option
-                    >
+                <select
+                    id="category"
+                    name="CATEGORY_ID"
+                    class="form-control"
+                    required
+                >
+                    {
+                        categories.map((cat: any) => (
+                            <option
+                                value={cat.CATEGORY_ID}
+                                selected={
+                                    product.CATEGORY_ID === cat.CATEGORY_ID
+                                }
+                            >
+                                {cat.CATEGORY}
+                            </option>
+                        ))
+                    }
                 </select>
             </div>
 
@@ -49,8 +68,9 @@ const product = {
                     <input
                         type="number"
                         id="price"
+                        name="PRICE"
                         class="form-control"
-                        value={product.price}
+                        value={product.PRICE}
                         required
                     />
                 </div>
@@ -59,8 +79,9 @@ const product = {
                     <input
                         type="number"
                         id="stock"
+                        name="STOCK"
                         class="form-control"
-                        value={product.stock}
+                        value={product.STOCK}
                         required
                     />
                 </div>
@@ -68,16 +89,24 @@ const product = {
 
             <div class="form-group">
                 <label for="description">Deskripsi</label>
-                <textarea id="description" class="form-control"
-                    >{product.description}</textarea
+                <textarea
+                    id="description"
+                    name="DESCRIPTION"
+                    class="form-control">{product.DESCRIPTION}</textarea
                 >
             </div>
 
             <div class="form-group">
-                <label for="image">Foto Produk</label>
-                <input type="file" id="image" class="form-control" />
+                <label for="image">URL Foto Produk</label>
+                <input
+                    type="text"
+                    id="image"
+                    name="IMAGE"
+                    class="form-control"
+                    value={product.IMAGE}
+                />
                 <small style="color: var(--color-text-muted);"
-                    >Biarkan kosong jika tidak ingin mengubah foto.</small
+                    >Masukkan URL gambar produk.</small
                 >
             </div>
 
@@ -89,6 +118,47 @@ const product = {
             </div>
         </form>
     </div>
+
+    <script is:inline>
+        const form = document.getElementById("editProductForm");
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            const id = data.PRODUCT_ID;
+
+            // Convert numbers
+            data.PRICE = parseFloat(data.PRICE);
+            data.STOCK = parseInt(data.STOCK);
+            // data.CATEGORY_ID is string, do not parse
+
+            try {
+                const response = await fetch(
+                    `http://localhost:3000/products/${id}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data),
+                    },
+                );
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Produk berhasil diupdate!");
+                    window.location.href = "/admin/products";
+                } else {
+                    alert(
+                        "Gagal mengupdate produk: " +
+                            (result.error || "Unknown error"),
+                    );
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Terjadi kesalahan saat menghubungi server");
+            }
+        });
+    </script>
 </AdminLayout>
 
 <style>

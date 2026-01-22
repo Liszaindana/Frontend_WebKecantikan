@@ -1,147 +1,263 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-
-const team = [
-    {
-        name: "Nama Mahasiswa 1",
-        role: "UI/UX Designer",
-        nim: "12345678",
-        photo: "",
-    },
-    {
-        name: "Nama Mahasiswa 2",
-        role: "Frontend Developer",
-        nim: "87654321",
-        photo: "",
-    },
-    {
-        name: "Nama Mahasiswa 3",
-        role: "Backend Developer",
-        nim: "11223344",
-        photo: "",
-    },
-];
+import { Image } from "astro:assets";
+import about1 from "../assets/about1.png";
+import about3 from "../assets/about3.png";
+import about4 from "../assets/about4.png";
+import about5 from "../assets/about5.png";
 ---
 
-<MainLayout title="Tentang Kami - Skinfinity" activePath="/about">
-    <main class="container page-content">
-        <section class="about-hero animate-fade-in">
-            <h1 class="text-gradient">Tentang Skinfinity</h1>
-            <p>
-                Kami berdedikasi untuk menyediakan produk kesehatan dan
-                kecantikan terbaik untuk Anda.
-            </p>
+<MainLayout title="About Us - Skinfinity" activePath="/about">
+    <div class="about-page">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <Image src={about1} alt="About Hero" class="full-img" />
         </section>
 
-        <section class="team-section">
-            <h2>Tim Kami</h2>
-            <div class="team-grid">
-                {
-                    team.map((member) => (
-                        <div class="member-card glass-panel">
-                            <div class="member-photo">
-                                {member.photo ? (
-                                    <img src={member.photo} alt={member.name} />
-                                ) : (
-                                    <div class="photo-placeholder">
-                                        {member.name[0]}
-                                    </div>
-                                )}
-                            </div>
-                            <h3>{member.name}</h3>
-                            <p class="role">{member.role}</p>
-                            <p class="nim">{member.nim}</p>
-                        </div>
-                    ))
-                }
+        <!-- Rules Section -->
+        <section class="rules-section">
+            <div class="rules-container">
+                <div class="rules-text-left">
+                    <div class="paint-tag">PAINT</div>
+                    <h1>YOUR OWN RULES</h1>
+                </div>
+                <div class="rules-content-right">
+                    <p>
+                        Bayangkan sebuah dunia tanpa batasan, di mana segalanya
+                        adalah kanvas dan setiap pilihan adalah warna baru.
+                        Setiap kita terlahir dalam etika bahwa cantik itu harus
+                        seperti ini dan begini. Namun, bukankah pelangi indah
+                        karena warnanya yang beragam? Begitu mendefinisikan
+                        kembali arti pesona. Kecantikan adalah tentang keunikan
+                        tanpa kata, tentang bagaimana kamu menunjukkan pada
+                        dunia siapa dirimu hari ini. Jangan takut untuk
+                        bereksperimen, jangan ragu untuk tampil mencolok, dan
+                        jangan pernah meminta izin untuk menjadi luar biasa. Di
+                        sini, tidak ada benar atau salah - yang ada hanyalah
+                        kebebasan untuk berekspresi. Biarkan kecantikanmu
+                        menjadi bahasa universal yang menginspirasi setiap
+                        pasang mata yang melihat.
+                    </p>
+                    <div class="tagline">
+                        UNLEASH YOUR INNER GLOW, RULE YOUR OWN WORLD
+                    </div>
+                </div>
             </div>
         </section>
-    </main>
+
+        <!-- Display Section (about3) -->
+        <section class="display-section">
+            <Image src={about3} alt="Display" class="full-img" />
+        </section>
+
+        <!-- Focus Section (about4) -->
+        <section class="focus-section">
+            <Image src={about4} alt="Focus" class="full-img" />
+        </section>
+
+        <!-- Help Section (about5) -->
+        <section class="help-section">
+            <div class="help-container">
+                <div class="help-image">
+                    <Image src={about5} alt="Model" class="model-img" />
+                </div>
+                <div class="help-content">
+                    <div class="help-title">
+                        <h2>BUTUH BANTUAN?</h2>
+                        <div class="title-line"></div>
+                    </div>
+                    <p>
+                        Konsultasi kecantikan kami siap menjawab setiap
+                        pertanyaan Anda. Hubungi kami dengan menekan tombol di
+                        bawah dan kami akan merespons sesegera mungkin.
+                    </p>
+                    <a href="#" class="location-link">VIEW LOCATION STORE</a>
+                    <a href="/contact" class="btn-contact">CONTACT US</a>
+                </div>
+            </div>
+        </section>
+    </div>
 </MainLayout>
 
 <style>
-    .page-content {
-        padding-top: 4rem;
-        min-height: 80vh;
+    .about-page {
+        background-color: #fff;
+        width: 100%;
+        overflow-x: hidden;
     }
 
-    .about-hero {
-        text-align: center;
-        max-width: 800px;
-        margin: 0 auto 6rem;
+    .full-img {
+        width: 100%;
+        height: auto;
+        display: block;
     }
 
-    .about-hero h1 {
-        font-size: 3rem;
-        margin-bottom: 1.5rem;
-    }
-    .about-hero p {
-        font-size: 1.25rem;
-        color: var(--color-text-muted);
+    /* Hero Section */
+    .hero-section {
+        width: 100%;
     }
 
-    .team-section {
-        margin-bottom: 4rem;
+    /* Rules Section */
+    .rules-section {
+        padding: 5rem 10% 4rem;
+        background-color: #fff;
     }
 
-    .team-section h2 {
-        text-align: center;
-        margin-bottom: 3rem;
-        font-size: 2rem;
+    .rules-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 4rem;
+        align-items: flex-start;
     }
 
-    .team-grid {
+    .rules-text-left {
+        flex: 1;
+    }
+
+    .paint-tag {
+        background-color: #000;
+        color: #fff;
+        display: inline-block;
+        padding: 0.2rem 0.8rem;
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.05em;
+    }
+
+    .rules-text-left h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1;
+        margin: 0;
+        letter-spacing: -0.02em;
+        color: #000;
+    }
+
+    .rules-content-right {
+        flex: 1.2;
+        padding-top: 1rem;
+    }
+
+    .rules-content-right p {
+        font-size: 0.85rem;
+        line-height: 1.6;
+        color: #333;
+        margin-bottom: 2rem;
+        text-align: justify;
+    }
+
+    .tagline {
+        font-weight: 800;
+        font-size: 1rem;
+        color: #000;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Display Section */
+    .display-section {
+        width: 100%;
+    }
+
+    /* Focus Section */
+    .focus-section {
+        width: 100%;
+    }
+
+    /* Help Section */
+    .help-section {
+        background-color: #fff;
+        padding: 0;
+    }
+
+    .help-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 3rem;
-        justify-content: center;
+        grid-template-columns: 1fr 1fr;
+        align-items: stretch;
     }
 
-    .member-card {
-        padding: 3rem 2rem;
-        text-align: center;
+    .help-image {
+        width: 100%;
+    }
+
+    .model-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .help-content {
+        background-color: #fce7f3; /* Light pink from reference */
+        padding: 6rem 4rem;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        transition: transform 0.3s ease;
-    }
-
-    .member-card:hover {
-        transform: translateY(-10px);
-    }
-
-    .member-photo {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        margin-bottom: 1.5rem;
-        overflow: hidden;
-        background: var(--gradient-primary);
-        display: flex;
-        align-items: center;
         justify-content: center;
-        border: 4px solid rgba(255, 255, 255, 0.1);
     }
 
-    .photo-placeholder {
-        font-size: 3rem;
-        color: white;
-        font-weight: bold;
+    .help-title {
+        margin-bottom: 2rem;
     }
 
-    .member-card h3 {
-        margin: 0.5rem 0;
-        color: var(--color-text-main);
+    .help-title h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0;
+        color: #666; /* Gray-ish as in reference */
+        letter-spacing: 0.05em;
     }
 
-    .role {
-        color: var(--color-primary);
-        font-weight: 600;
-        margin: 0 0 0.5rem;
+    .title-line {
+        width: 100%;
+        height: 8px;
+        background-color: #f472b6; /* Bright pink line */
+        margin-top: 0.5rem;
     }
 
-    .nim {
-        color: var(--color-text-muted);
+    .help-content p {
         font-size: 0.9rem;
+        line-height: 1.6;
+        color: #444;
+        margin-bottom: 1.5rem;
+        max-width: 400px;
+    }
+
+    .location-link {
+        color: #000;
+        font-weight: 800;
+        text-decoration: underline;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+        display: inline-block;
+    }
+
+    .btn-contact {
+        background-color: #000;
+        color: #fff;
+        padding: 1rem 2rem;
+        text-align: center;
+        font-weight: 800;
+        text-decoration: none;
+        width: 100%;
+        max-width: 400px;
+        transition: opacity 0.3s;
+    }
+
+    .btn-contact:hover {
+        opacity: 0.8;
+    }
+
+    @media (max-width: 1024px) {
+        .rules-container {
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .help-container {
+            grid-template-columns: 1fr;
+        }
+        .help-content {
+            padding: 4rem 2rem;
+        }
     }
 </style>

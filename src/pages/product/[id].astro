@@ -1,0 +1,489 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import CategoryNav from "../../components/CategoryNav.astro";
+
+export const prerender = false; // We use dynamic ID from API
+
+const { id } = Astro.params;
+
+// Fetch product details from API
+let product: any = null;
+let category: any = null;
+
+try {
+    const res = await fetch(`http://localhost:3000/products/${id}`);
+    product = await res.json();
+
+    if (product && product.CATEGORY_ID) {
+        const catRes = await fetch(
+            `http://localhost:3000/categories/${product.CATEGORY_ID}`,
+        );
+        category = await catRes.json();
+    }
+} catch (e) {
+    console.error("Error fetching product details:", e);
+}
+
+if (!product) {
+    return Astro.redirect("/404");
+}
+---
+
+<MainLayout
+    title={`${product.PRODUCT_NAME} | Skinfinity`}
+    activePath="/products"
+>
+    <div class="product-detail-page">
+        <div
+            id="productData"
+            data-id={product.PRODUCT_ID}
+            data-name={product.PRODUCT_NAME}
+            data-price={product.PRICE}
+            data-category={category ? category.CATEGORY : "General"}
+            data-stock={product.STOCK}
+            style="display:none;"
+        >
+        </div>
+        <CategoryNav activeCategory={product.CATEGORY_ID} />
+        <div class="container">
+            <div class="detail-grid">
+                <!-- Product Image Section -->
+                <div class="image-section">
+                    <div class="main-image-card">
+                        <div class="img-placeholder">
+                            <span class="placeholder-text"
+                                >{product.PRODUCT_NAME}</span
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Info Section -->
+                <div class="info-section">
+                    <div class="breadcrumb">
+                        <a href="/categories">Products</a> /
+                        <a href={`/categories/${product.CATEGORY_ID}/products`}
+                            >{category ? category.CATEGORY : "General"}</a
+                        >
+                        / <span>{product.PRODUCT_NAME}</span>
+                    </div>
+                    <div class="category-tag">
+                        {category ? category.CATEGORY : "General"}
+                    </div>
+                    <h1 class="product-title">{product.PRODUCT_NAME}</h1>
+                    <p class="product-price">
+                        Rp {product.PRICE.toLocaleString("id-ID")}
+                    </p>
+
+                    <div class="product-meta">
+                        <div class="meta-item">
+                            <span class="label">Availability:</span>
+                            <span class="value"
+                                >{
+                                    product.STOCK > 0
+                                        ? `In Stock (${product.STOCK} items)`
+                                        : "Out of Stock"
+                                }</span
+                            >
+                        </div>
+                        <div class="meta-item">
+                            <span class="label">SKU:</span>
+                            <span class="value"
+                                >SKU-{
+                                    product.PRODUCT_ID.toString().padStart(
+                                        4,
+                                        "0",
+                                    )
+                                }</span
+                            >
+                        </div>
+                    </div>
+
+                    <div class="product-description">
+                        <h3>Description</h3>
+                        <p>
+                            {
+                                product.DESCRIPTION ||
+                                    "No description available for this product yet. Experience the ultimate skincare with Skinfinity's premium selection."
+                            }
+                        </p>
+                    </div>
+
+                    <div class="action-section">
+                        <div class="quantity-selector">
+                            <button id="qtyMinus" class="q-btn">-</button>
+                            <span id="qtyNum" class="q-num">1</span>
+                            <button id="qtyPlus" class="q-btn">+</button>
+                        </div>
+                        <button
+                            id="addToCartBtn"
+                            class="add-to-cart-btn btn-primary"
+                            >ADD TO CART</button
+                        >
+                    </div>
+
+                    <div class="extra-info">
+                        <div class="info-card">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                ><rect width="20" height="14" x="2" y="5" rx="2"
+                                ></rect><line x1="2" x2="22" y1="10" y2="10"
+                                ></line></svg
+                            >
+                            <span>Safe Payment</span>
+                        </div>
+                        <div class="info-card">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                ><path
+                                    d="M5 18H3c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h11c1.1 0 2 .9 2 2v1h5c1.1 0 2 .9 2 2v11c0 1.1-.9 2-2 2h-2"
+                                ></path><circle cx="7" cy="18" r="2"
+                                ></circle><circle cx="17" cy="18" r="2"
+                                ></circle><path d="M13 18H7"></path><path
+                                    d="M23 18H17"></path><path
+                                    d="M16 8h4.7c.6 0 1.1.5 1.1 1.1v4.5c0 .4-.2.8-.5 1l-2.3 2.3c-.3.3-.6.5-1 .5H16V8z"
+                                ></path></svg
+                            >
+                            <span>Fast Delivery</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</MainLayout>
+
+<script>
+    const qtyMinus = document.getElementById("qtyMinus");
+    const qtyPlus = document.getElementById("qtyPlus");
+    const qtyNum = document.getElementById("qtyNum");
+    const addToCartBtn = document.getElementById("addToCartBtn");
+    const productDataEl = document.getElementById("productData");
+
+    let quantity = 1;
+    const maxStock = parseInt(productDataEl?.dataset.stock || "99");
+
+    qtyPlus?.addEventListener("click", () => {
+        if (quantity < maxStock) {
+            quantity++;
+            if (qtyNum) qtyNum.textContent = quantity.toString();
+        }
+    });
+
+    qtyMinus?.addEventListener("click", () => {
+        if (quantity > 1) {
+            quantity--;
+            if (qtyNum) qtyNum.textContent = quantity.toString();
+        }
+    });
+
+    // Add to Cart functionality
+    addToCartBtn?.addEventListener("click", () => {
+        if (!productDataEl) return;
+
+        const productId = productDataEl.dataset.id;
+        const productName = productDataEl.dataset.name;
+        const productPrice = parseFloat(productDataEl.dataset.price || "0");
+        const productCategory = productDataEl.dataset.category;
+
+        // Get existing cart from localStorage
+        let cart = JSON.parse(localStorage.getItem("skinfinity_cart") || "[]");
+
+        // Check if product already exists in cart
+        const existingIndex = cart.findIndex(
+            (item: any) => item.id === productId,
+        );
+
+        if (existingIndex > -1) {
+            // Update quantity if product already in cart
+            cart[existingIndex].quantity += quantity;
+        } else {
+            // Add new product to cart
+            cart.push({
+                id: productId,
+                name: productName,
+                price: productPrice,
+                category: productCategory,
+                quantity: quantity,
+            });
+        }
+
+        // Save back to localStorage
+        localStorage.setItem("skinfinity_cart", JSON.stringify(cart));
+
+        // Show confirmation and redirect to chart
+        alert(
+            `${productName} (x${quantity}) berhasil ditambahkan ke keranjang!`,
+        );
+        window.location.href = "/chart";
+    });
+</script>
+
+<style>
+    .product-detail-page {
+        background-color: #fce7f3; /* Matching pink background */
+        min-height: 100vh;
+        padding-bottom: 4rem;
+    }
+
+    .container {
+        padding-top: 0rem;
+    }
+
+    .breadcrumb {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin-bottom: 2rem;
+    }
+
+    .breadcrumb a {
+        color: #d946ef;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 0.8fr 1.2fr; /* Make image column slightly smaller */
+        gap: 2rem; /* Reduced from 4rem */
+        background: white;
+        padding: 2rem; /* Reduced from 3rem */
+        border-radius: 30px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+        max-width: 1000px; /* Limit max width to keep it contained */
+        margin: 0 auto; /* Center it */
+    }
+
+    /* Image Section */
+    .image-section {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main-image-card {
+        background: #fdf2f8;
+        aspect-ratio: 1;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 1px solid rgba(217, 70, 239, 0.1);
+    }
+
+    .img-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border-radius: 20% 80% 20% 80% / 20% 50% 50% 80%;
+        margin: 1.5rem;
+    }
+
+    .placeholder-text {
+        color: #f472b6;
+        font-weight: 700;
+        font-size: 1.2rem;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    /* Info Section */
+    .info-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center content vertically */
+    }
+
+    .category-tag {
+        color: #d946ef;
+        font-weight: 700;
+        font-size: 0.75rem; /* Reduced */
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.25rem;
+    }
+
+    .product-title {
+        font-size: 1.8rem; /* Reduced from 2.5rem */
+        font-weight: 800;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+        line-height: 1.1;
+    }
+
+    .product-price {
+        font-size: 1.4rem; /* Reduced from 1.8rem */
+        font-weight: 700;
+        color: #d946ef;
+        margin-bottom: 1rem; /* Reduced from 2rem */
+    }
+
+    .product-meta {
+        background: #f9fafb;
+        padding: 1rem; /* Reduced from 1.5rem */
+        border-radius: 12px;
+        margin-bottom: 1.5rem; /* Reduced from 2rem */
+        display: flex;
+        flex-direction: row; /* Changed to row for compactness */
+        gap: 2rem;
+    }
+
+    .meta-item {
+        display: flex;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .meta-item .label {
+        color: #6b7280;
+        width: auto; /* Allow auto width */
+        font-weight: 500;
+    }
+
+    .meta-item .value {
+        color: #111827;
+        font-weight: 600;
+    }
+
+    .product-description {
+        margin-bottom: 1.5rem; /* Reduced from 2.5rem */
+    }
+
+    .product-description h3 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        color: #1f2937;
+    }
+
+    .product-description p {
+        color: #4b5563;
+        line-height: 1.5;
+        font-size: 0.9rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Limit text lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .action-section {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem; /* Reduced from 3rem */
+    }
+
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+        background: #f3f4f6;
+        padding: 0.25rem 0.5rem; /* Reduced padding */
+        border-radius: 99px;
+        min-width: 100px;
+        justify-content: space-between;
+    }
+
+    .q-btn {
+        width: 28px; /* Reduced size */
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: white;
+        font-weight: 700;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s;
+        font-size: 0.9rem;
+    }
+
+    .q-btn:hover {
+        background: #d946ef;
+        color: white;
+    }
+
+    .q-num {
+        font-weight: 700;
+        padding: 0 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .add-to-cart-btn {
+        flex: 1;
+        padding: 0.75rem 1.5rem; /* Reduced padding */
+        border-radius: 99px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 0.05em;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .add-to-cart-btn:hover {
+        transform: scale(1.02);
+    }
+
+    .extra-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        border-top: 1px solid #f3f4f6;
+        padding-top: 1.5rem;
+    }
+
+    .info-card {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6b7280;
+        font-size: 0.8rem;
+    }
+
+    .info-card svg {
+        color: #d946ef;
+        width: 20px;
+        height: 20px;
+    }
+
+    @media (max-width: 1024px) {
+        .detail-grid {
+            gap: 2rem;
+            padding: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+        }
+
+        .product-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+</style>

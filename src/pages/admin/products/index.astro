@@ -1,42 +1,19 @@
 ---
 import AdminLayout from "../../../layouts/adminLayout.astro";
 
-const products = [
-    {
-        id: 1,
-        name: "Premium Glow Serum",
-        category_slug: "skincare",
-        price: 150000,
-        stock: 45,
-        image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=200",
-    },
-    {
-        id: 2,
-        name: "Hydrating Face Mist",
-        category_slug: "skincare",
-        price: 85000,
-        stock: 8,
-        image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&q=80&w=200",
-    },
-    {
-        id: 3,
-        name: "Matte Liquid Lipstick",
-        category_slug: "makeup",
-        price: 120000,
-        stock: 25,
-        image: "https://images.unsplash.com/photo-1586776977607-310e9c725c37?auto=format&fit=crop&q=80&w=200",
-    },
-];
+const resp = await fetch("http://localhost:3000/products");
+const products = await resp.json();
 ---
 
 <AdminLayout title="Kelola Produk">
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-2xl font-bold text-slate-900">Kelola Produk</h1>
-        <button
+        <a
+            href="/admin/products/create"
             class="bg-pink-600 text-white px-6 py-3 rounded-full font-bold text-sm uppercase tracking-wider hover:bg-pink-700 transition-colors shadow-lg shadow-pink-600/20"
         >
             + Tambah Produk
-        </button>
+        </a>
     </div>
 
     <div
@@ -56,39 +33,44 @@ const products = [
             </thead>
             <tbody class="divide-y divide-gray-50">
                 {
-                    products.map((p) => (
+                    products.map((p: any) => (
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-4">
                                     <div class="w-10 h-10 rounded bg-gray-100 flex-shrink-0 overflow-hidden">
-                                        <img
-                                            src={p.image}
-                                            class="w-full h-full object-cover"
-                                        />
+                                        <div class="w-full h-full bg-pink-100 flex items-center justify-center text-[10px] text-pink-400 font-bold">
+                                            {p.CATEGORY_ID}
+                                        </div>
                                     </div>
                                     <span class="font-bold text-slate-900">
-                                        {p.name}
+                                        {p.PRODUCT_NAME}
                                     </span>
                                 </div>
                             </td>
                             <td class="px-6 py-4 capitalize">
-                                {p.category_slug}
+                                {p.CATEGORY_ID}
                             </td>
                             <td class="px-6 py-4">
-                                Rp {p.price.toLocaleString("id-ID")}
+                                Rp {p.PRICE?.toLocaleString("id-ID")}
                             </td>
                             <td class="px-6 py-4">
                                 <span
-                                    class={`px-2 py-1 rounded-full text-xs font-bold ${p.stock > 10 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                                    class={`px-2 py-1 rounded-full text-xs font-bold ${p.STOCK > 10 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
                                 >
-                                    {p.stock} pcs
+                                    {p.STOCK} pcs
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <button class="text-slate-400 hover:text-blue-600 mx-2">
+                                <a
+                                    href={`/admin/products/edit/${p.PRODUCT_ID}`}
+                                    class="text-slate-400 hover:text-blue-600 mx-2"
+                                >
                                     Edit
-                                </button>
-                                <button class="text-slate-400 hover:text-red-600 mx-2">
+                                </a>
+                                <button
+                                    class="text-slate-400 hover:text-red-600 mx-2 delete-btn"
+                                    data-id={p.PRODUCT_ID}
+                                >
                                     Hapus
                                 </button>
                             </td>
@@ -98,4 +80,35 @@ const products = [
             </tbody>
         </table>
     </div>
+
+    <script is:inline>
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+            btn.addEventListener("click", async () => {
+                const id = btn.getAttribute("data-id");
+                if (confirm("Apakah Anda yakin ingin menghapus produk ini?")) {
+                    try {
+                        const response = await fetch(
+                            `http://localhost:3000/products/${id}`,
+                            {
+                                method: "DELETE",
+                            },
+                        );
+                        const result = await response.json();
+                        if (response.ok) {
+                            alert(result.message || "Produk berhasil dihapus");
+                            window.location.reload();
+                        } else {
+                            alert(
+                                "Gagal menghapus produk: " +
+                                    (result.error || "Unknown error"),
+                            );
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                        alert("Terjadi kesalahan saat menghubungi server");
+                    }
+                }
+            });
+        });
+    </script>
 </AdminLayout>

@@ -1,0 +1,240 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import CategoryNav from "../../components/CategoryNav.astro";
+import type { Product } from "../../data/products";
+
+// Fetch categories from API
+const categoriesRes = await fetch("http://localhost:3000/categories");
+const categoriesData = await categoriesRes.json();
+
+// Fetch products from API
+const productsRes = await fetch("http://localhost:3000/products");
+const productsData = await productsRes.json();
+
+// Map product data to match frontend requirements
+const products: Product[] = productsData.map((p: any) => ({
+    id: p.PRODUCT_ID,
+    name: p.PRODUCT_NAME,
+    price: p.PRICE,
+    categoryId: p.CATEGORY_ID,
+    stock: p.STOCK,
+    categoryName:
+        categoriesData.find((c: any) => c.CATEGORY_ID === p.CATEGORY_ID)
+            ?.CATEGORY || "Unknown",
+    description: p.DESCRIPTION || "",
+}));
+
+const categories = categoriesData.map((c: any) => ({
+    id: c.CATEGORY_ID,
+    name: c.CATEGORY
+}));
+---
+
+<MainLayout title="Produk - Skinfinity" activePath="/products">
+    <div class="page-wrapper">
+        <CategoryNav activeCategory="all" />
+
+        <main class="products-container">
+            <div id="productGrid" class="product-grid">
+                {products.map((product: Product) => (
+                    <a href={`/product/${product.id}`} class="product-card" data-category-id={product.categoryId}>
+                        <div class="product-image-box">
+                            <div class="image-content">
+                                <!-- Placeholder for image or use product image if available -->
+                                <div class="img-placeholder">
+                                     <span class="img-text">{product.name}</span>
+                                </div>
+                                <button class="wishlist-btn" onclick="event.preventDefault();">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">{product.name}</h3>
+                            <p class="product-price">Rp {product.price.toLocaleString('id-ID')}</p>
+                        </div>
+                    </a>
+                ))}
+            </div>
+
+            <!-- Pagination (Placeholder as seen in ref) -->
+            <div class="pagination">
+                <button class="p-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <span class="p-number active">1</span>
+                <button class="p-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+            </div>
+        </main>
+    </div>
+</MainLayout>
+
+<script>
+    const catButtons = document.querySelectorAll('.cat-btn');
+    const productCards = document.querySelectorAll('.product-card');
+
+    catButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const category = btn.getAttribute('data-category');
+            if (!category) return; // If it's a link, let it navigate
+
+            // Update active button
+            catButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Filter products
+            productCards.forEach((card: any) => {
+                const cardCat = card.getAttribute('data-category-id');
+                if (category === 'all' || category === cardCat) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    .page-wrapper {
+        background-color: #fce7f3; /* Light pink background from ref */
+        min-height: 100vh;
+        padding-bottom: 4rem;
+    }
+
+    /* Product Grid */
+    .products-container {
+        max-width: 1280px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 3rem;
+    }
+
+    .product-card {
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .product-image-box {
+        background: white;
+        aspect-ratio: 1/1.1;
+        border-radius: 20% 80% 20% 80% / 20% 50% 50% 80%; /* Unique leaf shape from ref */
+        padding: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    }
+
+    .image-content {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .img-placeholder {
+        width: 100%;
+        height: 100%;
+        background: #fdf2f8;
+        border-radius: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #f472b6;
+        font-weight: 600;
+        text-align: center;
+        padding: 1rem;
+        overflow: hidden;
+    }
+
+    .wishlist-btn {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        color: #9ca3af;
+        transition: color 0.2s ease;
+    }
+
+    .wishlist-btn:hover {
+        color: #ef4444;
+    }
+
+    .product-info {
+        margin-top: 1.5rem;
+    }
+
+    .product-name {
+        font-family: inherit;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.25rem;
+    }
+
+    .product-price {
+        color: #6b7280;
+        font-size: 0.95rem;
+    }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5rem;
+        margin-top: 5rem;
+    }
+
+    .p-arrow {
+        color: #d946ef;
+        transition: transform 0.2s ease;
+    }
+
+    .p-arrow:hover {
+        transform: scale(1.1);
+    }
+
+    .p-number {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #d946ef;
+        color: #d946ef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        font-weight: 600;
+        background: white;
+    }
+
+    .p-number.active {
+        background: #d946ef;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .category-list-inner {
+            gap: 1rem;
+        }
+    }
+</style>

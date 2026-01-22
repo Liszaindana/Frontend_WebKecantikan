@@ -1,215 +1,1004 @@
 ---
 import AdminLayout from "../../layouts/adminLayout.astro";
 
-// Statistics Mock
+const respProducts = await fetch("http://localhost:3000/products");
+const products = await respProducts.json();
+
+const respOrders = await fetch("http://localhost:3000/orders");
+const recentOrdersData = await respOrders.json();
+
+const respCustomers = await fetch("http://localhost:3000/customers");
+const customers = await respCustomers.json();
+
+const totalSales = recentOrdersData.reduce(
+    (acc: number, curr: any) => acc + (curr.TOTAL || 0),
+    0,
+);
+
+const respCats = await fetch("http://localhost:3000/categories");
+const categories = await respCats.json();
+
+const getCategoryName = (id: string) => {
+    const cat = categories.find((c: any) => c.CATEGORY_ID === id);
+    return cat ? cat.CATEGORY : "Kategori";
+};
+
+// Statistics
 const stats = [
     {
-        label: "Total Penjualan",
-        value: "Rp 15.000.000",
-        change: "+12%",
-        icon: "💰",
+        label: "TOTAL PENJUALAN",
+        value: `Rp ${totalSales.toLocaleString("id-ID")}`,
     },
-    { label: "Total Pesanan", value: "150", change: "+5%", icon: "📦" },
-    { label: "Pelanggan Baru", value: "45", change: "+20%", icon: "👥" },
-    { label: "Produk Terjual", value: "320", change: "+8%", icon: "🏷️" },
+    {
+        label: "TOTAL PRODUK",
+        value: products.length.toString(),
+    },
+    {
+        label: "PELANGGAN",
+        value: customers.length.toString(),
+    },
+    {
+        label: "TRANSAKSI",
+        value: recentOrdersData.length.toString(),
+    },
 ];
 
-const recentOrders = [
-    {
-        id: "#ORD-001",
-        customer: "Budi Santoso",
-        date: "12 Jan 2024",
-        total: "Rp 450.000",
-        status: "Selesai",
+const recentOrders = recentOrdersData.slice(0, 5).map((o: any) => ({
+    id: `#ORD-${o.ORDER_ID}`,
+    rawId: o.ORDER_ID,
+    customer: {
+        name: o.CUST_NAME || "Guest",
+        contact: o.CONTACT_NUMBER || "-",
     },
-    {
-        id: "#ORD-002",
-        customer: "Siti Aminah",
-        date: "11 Jan 2024",
-        total: "Rp 120.000",
-        status: "Proses",
-    },
-    {
-        id: "#ORD-003",
-        customer: "Andi Saputra",
-        date: "11 Jan 2024",
-        total: "Rp 1.200.000",
-        status: "Pending",
-    },
-];
+    date: new Date(o.ORDER_DATE).toLocaleDateString("id-ID"),
+    total: `Rp ${o.TOTAL?.toLocaleString("id-ID")}`,
+    status: "Selesai", // Status is not in the DB, so we keep Selesai for now
+}));
 ---
 
 <AdminLayout title="Dashboard">
-    <!-- Stats Grid -->
+    <!-- 1. Stats Grid (4 items) -->
     <div class="stats-grid">
         {
-            stats.map((stat) => (
-                <div class="stat-card glass-panel">
-                    <div class="stat-icon">{stat.icon}</div>
+            stats.map((stat: any) => (
+                <div class="stat-card">
                     <div class="stat-info">
                         <h3>{stat.label}</h3>
                         <div class="value">{stat.value}</div>
-                        <span class="change">{stat.change} bulan ini</span>
                     </div>
                 </div>
             ))
         }
     </div>
 
-    <!-- Recent Orders -->
-    <div class="section glass-panel">
-        <div class="section-header">
-            <h2>Pesanan Terbaru</h2>
-            <button class="btn-text">Lihat Semua</button>
-        </div>
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Pelanggan</th>
-                        <th>Tanggal</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        recentOrders.map((order) => (
-                            <tr>
-                                <td class="primary-text">{order.id}</td>
-                                <td>{order.customer}</td>
-                                <td>{order.date}</td>
-                                <td>{order.total}</td>
-                                <td>
-                                    <span
-                                        class={`status-badge ${order.status.toLowerCase()}`}
-                                    >
-                                        {order.status}
+    <!-- 2. Middle Section: Recent Products & Recent Orders -->
+    <div class="split-grid">
+        <!-- Recent Products -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Produk Terbaru</h2>
+                <a href="/admin/products" class="btn-text">Lihat Semua</a>
+            </div>
+            <div class="recent-list">
+                {
+                    products
+                        .slice(-5)
+                        .reverse()
+                        .map((p: any) => (
+                            <div class="list-item">
+                                <div class="item-img-placeholder">
+                                    <span>
+                                        {p.PRODUCT_NAME.substring(
+                                            0,
+                                            2,
+                                        ).toUpperCase()}
                                     </span>
-                                </td>
-                                <td>
-                                    <button class="action-btn">Detail</button>
-                                </td>
-                            </tr>
+                                </div>
+                                <div class="item-info">
+                                    <span class="item-title">
+                                        {p.PRODUCT_NAME}
+                                    </span>
+                                    <span class="item-sub">
+                                        {getCategoryName(p.CATEGORY_ID)}
+                                    </span>
+                                </div>
+                                <div class="item-value">
+                                    Rp {p.PRICE.toLocaleString("id-ID")}
+                                </div>
+                            </div>
                         ))
-                    }
-                </tbody>
-            </table>
+                }
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Transaksi Terakhir</h2>
+                <a href="/admin/penjualan" class="btn-text">Lihat Semua</a>
+            </div>
+            <div class="recent-list">
+                {
+                    recentOrders.map((order: any) => (
+                        <div class="list-item">
+                            <div class="item-info">
+                                <span class="item-title">
+                                    {order.customer.name}
+                                </span>
+                                <span class="item-sub">{order.date}</span>
+                            </div>
+                            <div class="item-status-wrapper">
+                                <div class="item-value">{order.total}</div>
+                                <span
+                                    class={`status-badge-pill ${order.status.toLowerCase()}`}
+                                >
+                                    {order.status.toUpperCase()}
+                                </span>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
         </div>
     </div>
+
+    <!-- 3. Bottom Section: Database Reports -->
+    <div class="reports-section">
+        <!-- 1. Produk Paling Banyak Dibeli -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Produk Paling Banyak Dibeli</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="tableProdukTerbanyak">
+                    <thead>
+                        <tr>
+                            <th>Produk Name</th>
+                            <th>Total Qty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            ><td colspan="2" class="loading-text"
+                                >Memuat data...</td
+                            ></tr
+                        >
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. Top 10 Produk -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Top 10 Produk Terlaris</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="tableTop10Produk">
+                    <thead>
+                        <tr>
+                            <th>Produk Name</th>
+                            <th>Total Qty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            ><td colspan="2" class="loading-text"
+                                >Memuat data...</td
+                            ></tr
+                        >
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. Customer Order Terbanyak -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Customer Order Terbanyak</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="tableCustomerOrder">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Total Order</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            ><td colspan="2" class="loading-text"
+                                >Memuat data...</td
+                            ></tr
+                        >
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4. Customer Nominal Terbesar -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Customer Nominal Terbesar</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="tableCustomerNominal">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Total Nominal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            ><td colspan="2" class="loading-text"
+                                >Memuat data...</td
+                            ></tr
+                        >
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 5. Customer Item Terbanyak -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Customer Item Terbanyak</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="tableCustomerItem">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Total Item</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            ><td colspan="2" class="loading-text"
+                                >Memuat data...</td
+                            ></tr
+                        >
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 6. Profit Bulanan Produk -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Profit Bulanan Produk</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="tableProfitBulanan">
+                    <thead>
+                        <tr>
+                            <th>Produk Name</th>
+                            <th>Bulan</th>
+                            <th>Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            ><td colspan="3" class="loading-text"
+                                >Memuat data...</td
+                            ></tr
+                        >
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 7. Penjualan Bulanan Produk -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Penjualan Bulanan Produk</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="tablePenjualanBulanan">
+                    <thead>
+                        <tr>
+                            <th>Produk Name</th>
+                            <th>Bulan</th>
+                            <th>Total Jual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            ><td colspan="3" class="loading-text"
+                                >Memuat data...</td
+                            ></tr
+                        >
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 8. Order Bulanan Customer -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Order Bulanan Customer</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="tableOrderBulananCustomer">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Bulan</th>
+                            <th>Total Order</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            ><td colspan="3" class="loading-text"
+                                >Memuat data...</td
+                            ></tr
+                        >
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 9. Nominal Bulanan Customer -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Nominal Bulanan Customer</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="tableNominalBulananCustomer">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Bulan</th>
+                            <th>Total Nominal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            ><td colspan="3" class="loading-text"
+                                >Memuat data...</td
+                            ></tr
+                        >
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 10. Layanan Bulanan Kasir -->
+        <div class="section glass-panel">
+            <div class="section-header">
+                <h2>Layanan Bulanan Kasir</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="tableLayananKasir">
+                    <thead>
+                        <tr>
+                            <th>Kasir</th>
+                            <th>Bulan</th>
+                            <th>Jumlah Layanan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            ><td colspan="3" class="loading-text"
+                                >Memuat data...</td
+                            ></tr
+                        >
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:3000/database";
+
+        // Helper function to format currency
+        const formatRupiah = (num: any) =>
+            new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+            }).format(num || 0);
+
+        // 1. Produk Terbanyak
+        fetch(`${API_BASE}/produk-terbanyak`)
+            .then((res) => res.json())
+            .then((data) => {
+                const tbody = document.querySelector(
+                    "#tableProdukTerbanyak tbody",
+                );
+                if (!tbody) return;
+                if (data.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="2">Tidak ada data</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data
+                    .map(
+                        (item: any) => `
+                    <tr>
+                        <td>${item.PRODUCT_NAME}</td>
+                        <td>${item.total_qty}</td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+            });
+
+        // 2. Top 10 Produk
+        fetch(`${API_BASE}/top10-produk`)
+            .then((res) => res.json())
+            .then((data) => {
+                const tbody = document.querySelector("#tableTop10Produk tbody");
+                if (!tbody) return;
+                if (data.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="2">Tidak ada data</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data
+                    .map(
+                        (item: any) => `
+                    <tr>
+                        <td>${item.PRODUCT_NAME}</td>
+                        <td>${item.total_qty}</td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+            });
+
+        // 3. Customer Order Terbanyak
+        fetch(`${API_BASE}/customer-order-terbanyak`)
+            .then((res) => res.json())
+            .then((data) => {
+                const tbody = document.querySelector(
+                    "#tableCustomerOrder tbody",
+                );
+                if (!tbody) return;
+                if (data.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="2">Tidak ada data</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data
+                    .map(
+                        (item: any) => `
+                    <tr>
+                        <td>${item.CUST_NAME}</td>
+                        <td>${item.total_order}</td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+            });
+
+        // 4. Customer Nominal Terbesar
+        fetch(`${API_BASE}/customer-nominal-terbesar`)
+            .then((res) => res.json())
+            .then((data) => {
+                const tbody = document.querySelector(
+                    "#tableCustomerNominal tbody",
+                );
+                if (!tbody) return;
+                if (data.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="2">Tidak ada data</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data
+                    .map(
+                        (item: any) => `
+                    <tr>
+                        <td>${item.CUST_NAME}</td>
+                        <td>${formatRupiah(item.total_nominal)}</td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+            });
+
+        // 5. Customer Item Terbanyak
+        fetch(`${API_BASE}/customer-item-terbanyak`)
+            .then((res) => res.json())
+            .then((data) => {
+                const tbody = document.querySelector(
+                    "#tableCustomerItem tbody",
+                );
+                if (!tbody) return;
+                if (data.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="2">Tidak ada data</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data
+                    .map(
+                        (item: any) => `
+                    <tr>
+                        <td>${item.CUST_NAME}</td>
+                        <td>${item.total_item}</td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+            });
+
+        // 6. Profit Bulanan Produk
+        fetch(`${API_BASE}/profit-bulanan-produk`)
+            .then((res) => res.json())
+            .then((data) => {
+                const tbody = document.querySelector(
+                    "#tableProfitBulanan tbody",
+                );
+                if (!tbody) return;
+                if (data.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="3">Tidak ada data</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data
+                    .map(
+                        (item: any) => `
+                    <tr>
+                        <td>${item.PRODUCT_NAME}</td>
+                        <td>${item.bulan}</td>
+                        <td>${formatRupiah(item.profit)}</td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+            });
+
+        // 7. Penjualan Bulanan Produk
+        fetch(`${API_BASE}/penjualan-bulanan-produk`)
+            .then((res) => res.json())
+            .then((data) => {
+                const tbody = document.querySelector(
+                    "#tablePenjualanBulanan tbody",
+                );
+                if (!tbody) return;
+                if (data.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="3">Tidak ada data</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data
+                    .map(
+                        (item: any) => `
+                    <tr>
+                        <td>${item.PRODUCT_NAME}</td>
+                        <td>${item.bulan}</td>
+                        <td>${item.total_jual}</td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+            });
+
+        // 8. Order Bulanan Customer
+        fetch(`${API_BASE}/order-bulanan-customer`)
+            .then((res) => res.json())
+            .then((data) => {
+                const tbody = document.querySelector(
+                    "#tableOrderBulananCustomer tbody",
+                );
+                if (!tbody) return;
+                if (data.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="3">Tidak ada data</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data
+                    .map(
+                        (item: any) => `
+                    <tr>
+                        <td>${item.CUST_NAME}</td>
+                        <td>${item.bulan}</td>
+                        <td>${item.total_order}</td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+            });
+
+        // 9. Nominal Bulanan Customer
+        fetch(`${API_BASE}/nominal-bulanan-customer`)
+            .then((res) => res.json())
+            .then((data) => {
+                const tbody = document.querySelector(
+                    "#tableNominalBulananCustomer tbody",
+                );
+                if (!tbody) return;
+                if (data.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="3">Tidak ada data</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data
+                    .map(
+                        (item: any) => `
+                    <tr>
+                        <td>${item.CUST_NAME}</td>
+                        <td>${item.bulan}</td>
+                        <td>${formatRupiah(item.total_nominal)}</td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+            });
+
+        // 10. Layanan Bulanan Kasir
+        fetch(`${API_BASE}/layanan-bulanan-kasir`)
+            .then((res) => res.json())
+            .then((data) => {
+                const tbody = document.querySelector(
+                    "#tableLayananKasir tbody",
+                );
+                if (!tbody) return;
+                if (data.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="3">Tidak ada data</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data
+                    .map(
+                        (item: any) => `
+                    <tr>
+                        <td>${item.kasir}</td>
+                        <td>${item.bulan}</td>
+                        <td>${item.jumlah_layanan}</td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+            });
+    </script>
 </AdminLayout>
 
 <style>
+    /* Stats Grid */
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 1.5rem;
         margin-bottom: 2rem;
     }
 
-    .stat-card {
-        padding: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
+    @media (max-width: 1024px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 640px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
     }
 
-    .stat-icon {
+    .stat-card {
+        padding: 2rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: white;
+        border-radius: 12px;
+        box-shadow:
+            0 1px 3px 0 rgba(0, 0, 0, 0.1),
+            0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        border: 1px solid #f1f5f9;
+        transition: transform 0.2s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+    }
+    .stat-info h3 {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #64748b;
+        margin: 0 0 0.5rem 0;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    .value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    /* Split Grid */
+    .split-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    @media (max-width: 1024px) {
+        .split-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Lists */
+    .recent-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .list-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        background: transparent;
+        border-radius: 0;
+    }
+    .item-img-placeholder {
         width: 50px;
         height: 50px;
-        background: rgba(99, 102, 241, 0.1);
-        border-radius: 12px;
+        background: #fff1f7;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
+        border: 1px solid rgba(232, 121, 249, 0.1);
     }
-
-    .stat-info h3 {
-        margin: 0;
-        font-size: 0.875rem;
-        color: var(--color-text-muted);
+    .item-img-placeholder span {
+        color: var(--color-primary-dark);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+    }
+    .item-icon {
+        width: 40px;
+        height: 40px;
+        background: #fff;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+    .item-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .item-title {
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 0.95rem;
+    }
+    .item-sub {
+        font-size: 0.85rem;
+        color: #94a3b8;
         font-weight: 500;
     }
-
-    .value {
-        font-size: 1.5rem;
+    .item-value {
         font-weight: 700;
-        margin: 0.25rem 0;
+        color: #0f172a;
+        font-size: 0.95rem;
+    }
+    .item-status-wrapper {
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.25rem;
+    }
+    .status-badge-pill {
+        font-size: 0.65rem;
+        font-weight: 800;
+        padding: 0.2rem 0.6rem;
+        border-radius: 99px;
+        letter-spacing: 0.025em;
+    }
+    .status-badge-pill.selesai {
+        background: #dcfce7;
+        color: #166534;
     }
 
-    .change {
+    /* Analytics Section */
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 1.5rem;
+    }
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+    .span-2 {
+        grid-column: span 2;
+    }
+    @media (max-width: 1280px) {
+        .analytics-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 768px) {
+        .analytics-grid {
+            grid-template-columns: 1fr;
+        }
+        .span-2 {
+            grid-column: span 1;
+        }
+    }
+
+    /* Charts & Rankings */
+    .chart-container {
+        height: 300px;
+        width: 100%;
+    }
+    .ranking-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .ranking-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.875rem;
+    }
+    .ranking-item:last-child {
+        border-bottom: none;
+    }
+
+    .rank {
+        width: 24px;
+        height: 24px;
+        background: #f1f5f9;
+        color: #64748b;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 0.75rem;
-        color: var(--color-success);
+        font-weight: 700;
+    }
+    .rank-1 {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+    .rank-2 {
+        background: #ffedd5;
+        color: #f97316;
+    }
+    .rank-3 {
+        background: #fef3c7;
+        color: #f59e0b;
     }
 
+    .rank-avatar {
+        font-size: 1.25rem;
+    }
+    .rank-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .rank-name {
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: #334155;
+    }
+    .rank-sub {
+        font-size: 0.75rem;
+        color: #94a3b8;
+    }
+    .rank-value {
+        font-weight: 700;
+        font-size: 0.875rem;
+        color: #059669;
+    }
+
+    /* Common */
     .section {
         padding: 1.5rem;
+        height: 100%;
     }
-
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        border-radius: 1rem;
+    }
     .section-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1.5rem;
     }
+    .section-header h2 {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
 
     .btn-text {
+        color: var(--color-primary-dark);
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .btn-text:hover {
         color: var(--color-primary);
-        font-weight: 600;
     }
 
     .table-container {
         overflow-x: auto;
     }
-
     .data-table {
         width: 100%;
         border-collapse: collapse;
     }
-
-    .data-table th,
-    .data-table td {
-        padding: 1rem;
-        text-align: left;
-        border-bottom: 1px solid var(--color-border);
-    }
-
     .data-table th {
-        color: var(--color-text-muted);
-        font-weight: 500;
-        font-size: 0.875rem;
+        text-align: left;
+        padding: 0.75rem;
+        font-size: 0.75rem;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
     }
-
-    .primary-text {
-        color: var(--color-primary);
+    .data-table td {
+        padding: 0.75rem;
+        border-top: 1px solid #f1f5f9;
+        font-size: 0.875rem;
+        color: #334155;
+    }
+    .font-bold {
         font-weight: 600;
     }
-
     .status-badge {
         padding: 0.25rem 0.75rem;
         border-radius: 99px;
         font-size: 0.75rem;
         font-weight: 600;
+        display: inline-block;
     }
-
     .status-badge.selesai {
-        background: rgba(34, 197, 94, 0.1);
-        color: var(--color-success);
+        background: #dcfce7;
+        color: #166534;
     }
     .status-badge.proses {
-        background: rgba(234, 179, 8, 0.1);
-        color: #eab308;
+        background: #fef9c3;
+        color: #854d0e;
     }
     .status-badge.pending {
-        background: rgba(148, 163, 184, 0.1);
-        color: var(--color-text-muted);
+        background: #f1f5f9;
+        color: #64748b;
     }
 
-    .action-btn {
-        color: var(--color-primary);
-        font-size: 0.875rem;
+    /* Reports Section */
+    .reports-section {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    @media (max-width: 1024px) {
+        .reports-section {
+            grid-template-columns: 1fr;
+        }
+    }
+    .loading-text {
+        color: #94a3b8;
+        text-align: center;
+        padding: 1rem;
     }
 </style>

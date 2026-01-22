@@ -5,8 +5,17 @@ import homeHero from "../assets/Home1.PNG";
 import salesImage from "../assets/sales.png";
 import bannerImage from "../assets/banner.png";
 
-// Empty for now as requested
-const newArrivals = [];
+const resp = await fetch("http://localhost:3000/products");
+const data = await resp.json();
+
+// Limit to 3 products for new arrivals
+const newArrivals = data.slice(0, 3).map((p: any) => ({
+	id: p.PRODUCT_ID,
+	name: p.PRODUCT_NAME,
+	price: p.PRICE,
+	categoryId: p.CATEGORY_ID,
+	stock: p.STOCK,
+}));
 ---
 
 <MainLayout title="Home">
@@ -43,14 +52,30 @@ const newArrivals = [];
 			</div>
 
 			<div class="products-grid">
-				<!-- Empty as requested -->
 				{
-					newArrivals.length === 0 && (
-						<div class="empty-placeholder">
-							New items coming soon...
-						</div>
-					)
+					newArrivals.map((product: any) => (
+						<a
+							href={`/product/${product.id}`}
+							class="home-product-card"
+						>
+							<div class="home-product-img">
+								<div class="img-placeholder">
+									{product.name}
+								</div>
+							</div>
+							<div class="product-info">
+								<h3>{product.name}</h3>
+								<p>
+									Rp {product.price.toLocaleString("id-ID")}
+								</p>
+							</div>
+						</a>
+					))
 				}
+			</div>
+
+			<div class="view-all-container">
+				<a href="/categories" class="view-all-btn">VIEW ALL PRODUCTS</a>
 			</div>
 		</div>
 	</section>
@@ -218,13 +243,84 @@ const newArrivals = [];
 		color: #94a3b8;
 	}
 
-	.empty-placeholder {
-		min-height: 300px;
+	/* Home Product Specifics */
+	.home-product-card {
+		background: white;
+		padding: 1.5rem;
+		border-radius: 20% 80% 20% 80% / 20% 50% 50% 80%;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		transition: transform 0.3s ease;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+	}
+
+	.home-product-card:hover {
+		transform: translateY(-5px);
+	}
+
+	.home-product-img {
+		aspect-ratio: 1;
+		width: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: rgba(26, 26, 26, 0.3);
-		font-style: italic;
+	}
+
+	.home-product-card .img-placeholder {
+		width: 100%;
+		height: 100%;
+		background: #fdf2f8;
+		border-radius: inherit;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #f472b6;
+		font-weight: 600;
+		font-size: 0.8rem;
+		text-align: center;
+		padding: 1rem;
+	}
+
+	.home-product-card h3 {
+		font-size: 1rem;
+		margin: 0;
+		color: #1a1a1a;
+	}
+
+	.home-product-card p {
+		margin: 0;
+		color: #64748b;
+		font-size: 0.9rem;
+	}
+
+	.view-all-container {
+		margin-top: 3rem;
+	}
+
+	.view-all-btn {
+		display: inline-block;
+		padding: 0.8rem 2.5rem;
+		border: 1px solid #1a1a1a;
+		color: #1a1a1a;
+		font-weight: 700;
+		font-size: 0.85rem;
+		letter-spacing: 0.1em;
+		transition: all 0.3s ease;
+	}
+
+	.view-all-btn:hover {
+		background: #1a1a1a;
+		color: #fff;
+	}
+
+	/* Existing Grids */
+	.products-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 2rem;
+		max-width: 1000px;
+		margin: 0 auto;
 	}
 
 	/* Sales Section */

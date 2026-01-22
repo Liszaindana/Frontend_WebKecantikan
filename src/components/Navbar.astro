@@ -73,13 +73,16 @@ const { activePath } = Astro.props;
     <nav class="main-nav-bar">
         <div class="container main-nav-inner">
             <a href="/" class="logo">
-                <Image src={logoImage} alt="Skinfinity Logo" height={45} />
+                <Image src={logoImage} alt="Skinfinity Logo" height={65} />
             </a>
             <div class="nav-links">
                 <a href="/" class={activePath === "/" ? "active" : ""}>HOME</a>
                 <a
-                    href="/products"
-                    class={activePath === "/products" ? "active" : ""}>PAGES</a
+                    href="/categories"
+                    class={activePath === "/categories" ||
+                    activePath === "/products"
+                        ? "active"
+                        : ""}>PRODUCTS</a
                 >
                 <a
                     href="/contact"
@@ -160,7 +163,7 @@ const { activePath } = Astro.props;
     /* Main Nav Bar */
     .main-nav-bar {
         background-color: #111827; /* Dark background as in reference */
-        padding: 0.4rem 0;
+        padding: 0.2rem 0;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
@@ -175,6 +178,7 @@ const { activePath } = Astro.props;
         gap: 1.5rem;
         margin-left: auto;
         margin-right: 2rem;
+        white-space: nowrap;
     }
 
     .nav-links a {
@@ -189,6 +193,45 @@ const { activePath } = Astro.props;
     .nav-links a:hover,
     .nav-links a.active {
         color: #f472b6;
+    }
+
+    /* Dropdown Styles */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #1f2937;
+        min-width: 180px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1001;
+        top: 100%;
+        left: 0;
+        border-radius: 4px;
+        padding: 0.5rem 0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown-content a {
+        color: #94a3b8;
+        padding: 0.6rem 1.2rem;
+        text-decoration: none;
+        display: block;
+        font-size: 0.8rem;
+        transition: all 0.2s ease;
+    }
+
+    .dropdown-content a:hover {
+        background-color: rgba(244, 114, 182, 0.1);
+        color: #f472b6;
+        padding-left: 1.5rem;
     }
 
     .nav-search {

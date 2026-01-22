@@ -2,23 +2,8 @@
 // src/pages/admin/customers/index.astro
 import AdminLayout from "../../../layouts/adminLayout.astro";
 
-// Data simulasi sesuai tabel 'customer' di database
-const customers = [
-    {
-        id: 1,
-        name: "Budi Santoso",
-        phone: "08123456789",
-        email: "budi@example.com",
-        totalOrders: 5,
-    },
-    {
-        id: 2,
-        name: "Siti Aminah",
-        phone: "08765432100",
-        email: "siti@example.com",
-        totalOrders: 3,
-    },
-];
+const resp = await fetch("http://localhost:3000/customers");
+const customers = await resp.json();
 ---
 
 <AdminLayout title="Kelola Pelanggan">
@@ -47,37 +32,36 @@ const customers = [
                 <tr>
                     <th class="px-6 py-4">Nama & Kontak</th>
                     <th class="px-6 py-4">Email</th>
-                    <th class="px-6 py-4">Total Belanja</th>
                     <th class="px-6 py-4 text-right">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
                 {
-                    customers.map((c) => (
+                    customers.map((c: any) => (
                         <tr class="hover:bg-slate-50/50 transition">
                             <td class="px-6 py-4">
                                 <div class="font-bold text-slate-800">
-                                    {c.name}
+                                    {c.CUST_NAME}
                                 </div>
                                 <div class="text-xs text-slate-400 font-mono">
-                                    {c.phone}
+                                    {c.CONTACT_NUMBER}
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-sm text-slate-600 font-medium">
-                                {c.email}
-                            </td>
-                            <td class="px-6 py-4 font-bold text-indigo-600">
-                                {c.totalOrders} Kali
+                                {c.EMAIL}
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-3 font-bold text-sm">
                                     <a
-                                        href={`/admin/customers/edit/${c.id}`}
+                                        href={`/admin/customers/edit/${c.CUST_ID}`}
                                         class="text-indigo-600 hover:underline"
                                     >
                                         Edit
                                     </a>
-                                    <button class="text-red-500 hover:underline">
+                                    <button
+                                        class="text-red-500 hover:underline delete-btn"
+                                        data-id={c.CUST_ID}
+                                    >
                                         Hapus
                                     </button>
                                 </div>
@@ -88,4 +72,39 @@ const customers = [
             </tbody>
         </table>
     </div>
+
+    <script is:inline>
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+            btn.addEventListener("click", async () => {
+                const id = btn.getAttribute("data-id");
+                if (
+                    confirm("Apakah Anda yakin ingin menghapus pelanggan ini?")
+                ) {
+                    try {
+                        const response = await fetch(
+                            `http://localhost:3000/customers/${id}`,
+                            {
+                                method: "DELETE",
+                            },
+                        );
+                        const result = await response.json();
+                        if (response.ok) {
+                            alert(
+                                result.message || "Pelanggan berhasil dihapus",
+                            );
+                            window.location.reload();
+                        } else {
+                            alert(
+                                "Gagal menghapus pelanggan: " +
+                                    (result.error || "Unknown error"),
+                            );
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                        alert("Terjadi kesalahan saat menghubungi server");
+                    }
+                }
+            });
+        });
+    </script>
 </AdminLayout>

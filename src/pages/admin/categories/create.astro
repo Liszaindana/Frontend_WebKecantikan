@@ -6,34 +6,29 @@ import AdminLayout from "../../../layouts/adminLayout.astro";
     <div class="glass-panel section">
         <h2>Tambah Kategori Baru</h2>
 
-        <form class="form-layout">
+        <form class="form-layout" id="createCategoryForm">
             <div class="form-group">
-                <label for="name">Nama Kategori</label>
+                <label for="id">Kode Kategori (ID)</label>
                 <input
                     type="text"
-                    id="name"
+                    id="id"
+                    name="CATEGORY_ID"
                     class="form-control"
-                    placeholder="Contoh: Alat Kecantikan"
+                    placeholder="Contoh: AC (Maks 2-5 Huruf)"
                     required
                 />
             </div>
 
             <div class="form-group">
-                <label for="slug">Slug (URL)</label>
+                <label for="name">Nama Kategori</label>
                 <input
                     type="text"
-                    id="slug"
+                    id="name"
+                    name="CATEGORY"
                     class="form-control"
-                    placeholder="contoh: alat-kecantikan"
+                    placeholder="Contoh: Alat Kecantikan"
+                    required
                 />
-            </div>
-
-            <div class="form-group">
-                <label for="description">Deskripsi</label>
-                <textarea
-                    id="description"
-                    class="form-control"
-                    placeholder="Deskripsi singkat kategori..."></textarea>
             </div>
 
             <div class="form-actions">
@@ -44,6 +39,41 @@ import AdminLayout from "../../../layouts/adminLayout.astro";
             </div>
         </form>
     </div>
+
+    <script is:inline>
+        const form = document.getElementById("createCategoryForm");
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch(
+                    "http://localhost:3000/categories",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data),
+                    },
+                );
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Kategori berhasil ditambahkan!");
+                    window.location.href = "/admin/categories";
+                } else {
+                    alert(
+                        "Gagal menambah kategori: " +
+                            (result.error || "Unknown error"),
+                    );
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Terjadi kesalahan saat menghubungi server");
+            }
+        });
+    </script>
 </AdminLayout>
 
 <style>
